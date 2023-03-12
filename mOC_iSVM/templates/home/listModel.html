@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}List File Model{% endblock %}
+
+
+
+{% block content %}
+
+
+<!-- First Container -->
+<div class="container-fluid bg-2 text-center">
+  <form hidden id='fNameFile' method="post" action="{% url 'DowMOdel' %}">
+   {% csrf_token %}
+ <input name='NameFile' id='NameFile'>
+ <button type='submit'>dowLoad</button>
+  </form>
+
+<script>
+  function dowLoad(val){
+    document.getElementById("NameFile").value = val;
+    document.getElementById("fNameFile").submit();
+  }
+</script>
+<table class="table" style="color: white"> 
+  <tr>
+    <th>ID</th>
+    <th>Name Model</th>
+    <th>Name File Model</th>
+    <th>Date Time</th>
+
+  </tr>
+    {% for i in listModel %}
+    <tr>
+          <td onclick="dowLoad($(this).attr('data-val'))" data-val="{{i.1}}">{{i.0}}</td>
+          <td onclick="dowLoad($(this).attr('data-val'))" data-val="{{i.1}}">{{i.4}}</td>
+          <td onclick="dowLoad($(this).attr('data-val'))" data-val="{{i.1}}">{{i.1}}</td>
+          <td onclick="dowLoad($(this).attr('data-val'))" data-val="{{i.1}}">{{i.5}}</td>
+    </tr>
+     {% endfor %}
+
+</table>
+  
+</div>
+
+{% endblock %}

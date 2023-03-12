@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block title %}Cài đặt dự đoán{% endblock %}
+{% block content %}
+{% if uploaded_file_url %}
+<h1>{{uploaded_file_url}}</h1>
+{% endif %}
+<div class="container-fluid bg-2">
+   <!-- begin -->
+   <h2 class="col-12 text-center">Cấu hình dự đoán</h2>
+   <!-- ten tham so -->
+   <div>
+      <h5 >Tiêu đề dự đoán</h5>
+      <input type="text" name="S_input" class="form-control" id="TieuDeDoan">
+      <h5 >Tên các tham số đầu vào</h5>
+      <div class="p-0 my-3 d-flex flex-row ">
+         <div class="input-group col-3 my-3 p-0">
+            <input placeholder="Tổng tham số dự đoán" oninput="generateInputs()" type="text" name="S_input" class="form-control" id="inputNumber">
+            <div class="input-group-prepend">
+               <span class="input-group-text bg-dark text-white" id="btnGenerate">Thêm</span>
+            </div>
+         </div>
+      </div>
+      <div class="p-0 my-12 d-flex flex-row justify-content-between">
+         <div id="inputContainer" class="row"></div>
+      </div>
+      <!-- ten out class -->
+      <div>
+         <h5 >Tên đầu ra các lớp</h5>
+         <div class="p-0 my-3 d-flex flex-row ">
+            <div class="input-group col-3 my-3 p-0">
+               <input placeholder="Tổng số lớp đầu ra" oninput="generateInputsClass()" type="text" name="S_input" class="form-control" id="inputNumberClass">
+               <div class="input-group-prepend">
+                  <span class="input-group-text bg-dark text-white" id="btnGenerate">Thêm</span>
+               </div>
+            </div>
+         </div>
+         <div class="p-0 my-12 d-flex flex-row justify-content-between">
+            <div id="inputContainerClass" class="row"></div>
+         </div>
+         <!-- chon model -->   
+         <div id="selectMOdel" style="display: none;">
+            <h5 >Chọn mô hình</h5>
+            <span onclick="selectMohinh(this.id)" id='GaussianNB'>GaussianNB</span>
+            <span onclick="selectMohinh(this.id)" id='DecisionTreeClassifier'>DecisionTreeClassifier</span>
+            <span onclick="selectMohinh(this.id)" id='KNeighborsClassifier'>KNeighborsClassifier</span>
+            <span onclick="selectMohinh(this.id)" id='BernoulliNB'>BernoulliNB</span>
+            <span onclick="selectMohinh(this.id)" id='ExtraTreeClassifier'>ExtraTreeClassifier</span>
+            <span onclick="selectMohinh(this.id)" id='BaggingClassifier'>BaggingClassifier</span>
+            <span onclick="selectMohinh(this.id)" id='AdaBoostClassifier'>AdaBoostClassifier</span>
+            <span onclick="selectMohinh(this.id)" id='MLPClassifier'>MLPClassifier</span>
+            <span onclick="selectMohinh(this.id)" id='LinearDiscriminantAnalysis'>LinearDiscriminantAnalysis</span>
+            <span onclick="selectMohinh(this.id)" id='RandomForestClassifier'>RandomForestClassifier</span>
+         </div>
+         <!-- button -->
+         <hr>
+         <div class="d-flex justify-content-center">
+            <button class="input-group-text bg-dark text-white" style='display: none;' id="saveCauHinh" onclick="saveCauHinh()">Lưu cấu hình</button>
+         </div>
+      </div>
+      <!-- end -->
+   </div>
+</div>
+<style>
+   .custom-file-input:lang(en)~.custom-file-label::after {
+   content: "Choose File";
+   }
+</style>
+<script>
+   //login
+   if (getCookie('login') == 'null'){
+      Login();
+   }
+   
+   function Login(){
+   let tk = prompt("Nhập tài khoản");
+   
+     if (tk == null || tk == "") {
+       alert("Tài khoản ko đuọc để trống");
+       Login();
+     } else {
+       let mk = prompt("Nhập mật khẩu");
+       console.log(MD5_(mk));
+       if (mk == null || mk == "") {
+          alert("Mật khẩu ko đuọc để trống");
+         Login();
+       }else{
+         if (MD5_(mk) == '4b83eccc1e1a5a9d9eb8ace38bb82f4b'){
+             setCookie('login', MD5_(mk), 30);
+             alert("Đăng nhập thành công");
+         }else{
+             setCookie('login', MD5_(mk), 30);
+             alert("Đăng nhập thành công");
+         }
+         location.reload();
+       }
+     }
+   }
+   
+
+   
+      const ListMoHinh = [];
+      function selectMohinh(id){
+         var txt = document.getElementById(id);
+         txt.style.color = "red";
+         ListMoHinh.push(id)
+      }
+   
+      function saveCauHinh(){
+          let LengNameThamSo = document.getElementById("inputNumber").value;
+          let LengNameClass = document.getElementById("inputNumberClass").value;
+          const ListNameThamSO = [];
+          const ListNameClass = [];
+         // cac tham so
+         for (var i = 0; i < LengNameThamSo; i++) {
+              let LengThamSo = document.getElementById("inputThamSo_"+i).value;
+              ListNameThamSO.push(LengThamSo);
+         }
+         //Class
+        for (var i = 0; i < LengNameClass; i++) {
+              let LengThamSo = document.getElementById("inputClass_"+i).value;
+              ListNameClass.push(LengThamSo);
+         }
+   
+         setCookie('LengNameThamSo', LengNameThamSo, 30);
+         setCookie('ListNameThamSO', ListNameThamSO, 30);
+    //Class
+         setCookie('LengNameClass', LengNameClass, 30);
+         setCookie('ListNameClass', ListNameClass, 30);
+   // TieuDeDoan
+         var TieuDeDoan = document.getElementById('TieuDeDoan').value;
+         setCookie('TieuDeDoan', TieuDeDoan, 30);
+   // ListMoHinh
+   
+         setCookie('ListMoHinh', ListMoHinh, 30);
+   
+         console.log(ListNameThamSO, ListNameClass);
+         alert("Các tham số được lưu thành công");
+   
+      
+      }
+      
+      $("#input-file-cut").on("change", function () {
+       var fileName = $(this).val().split("\\").pop();
+       $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+      
+      });
+      
+      
+       function generateInputsClass() {
+          var n = document.getElementById("inputNumberClass").value;
+          var inputContainer = document.getElementById("inputContainerClass");
+          inputContainer.innerHTML = "";
+          for (var i = 0; i < n; i++) {
+            var inputGroup = document.createElement("div");
+            inputGroup.className = "col-3 md-3";
+            var input = document.createElement("input");
+            input.type = "text";
+            input.id = "inputClass_" + i;
+            input.className = "form-control";
+            input.placeholder = "Tên lớp\t" +(i);
+            inputGroup.appendChild(input);
+            inputContainer.appendChild(inputGroup);
+          }
+          document.getElementById("saveCauHinh").style.display = 'block';
+        }
+      
+        function generateInputs() {
+          var n = document.getElementById("inputNumber").value;
+          var inputContainer = document.getElementById("inputContainer");
+          inputContainer.innerHTML = "";
+          for (var i = 0; i < n; i++) {
+            var inputGroup = document.createElement("div");
+            inputGroup.className = "col-3 md-3";
+            var input = document.createElement("input");
+            input.type = "text";
+            input.id = "inputThamSo_" + i;
+            input.className = "form-control";
+            input.placeholder = "Tên tham số\t" +(i);
+            inputGroup.appendChild(input);
+            inputContainer.appendChild(inputGroup);
+          }
+          document.getElementById("saveCauHinh").style.display = 'block';
+        }
+      
+      function check_value(e) {
+          var input = document.querySelectorAll("input[type=number]")
+          check_true = 1;
+          for (var i = 0; i < input.length; i++) {
+              if (input[i].value <= input[i].max & input[i].value >= input[i].min) {
+                  check_true += 1;
+              }
+              else {
+                  alert(f`Kiểm tra giá trị đầu vào ${input[i].name}`)
+                  break;
+              }
+      
+          }
+          if (check_true == input.length) {
+              e.parentElement.parentElement.submit();
+          }
+      }
+</script>
+{% endblock %}

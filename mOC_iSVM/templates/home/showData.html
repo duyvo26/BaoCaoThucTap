@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}Show Data{% endblock %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<div class="container-fluid bg-2" >
+   {% if img %}
+   <style>
+      body{
+      font-size: 22px;
+      }
+   </style>
+   <div class="m-2">
+      <div class="card text-center" >
+         <div class="col-12" style="text-align: end"><i class="text-danger bi bi-x-circle-fill"
+            onclick="history.go(-2);"></i>
+         </div>
+         <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="myTab">
+               <li class="nav-item">
+                  <a href="#Accuracy" class="nav-link active" data-bs-toggle="tab">Accuracy</a>
+               </li>
+               <li class="nav-item">
+                  <a href="#RecallScore" class="nav-link" data-bs-toggle="tab">Precision Score</a>
+               </li>
+               <li class="nav-item">
+                  <a href="#recallscore" class="nav-link" data-bs-toggle="tab">Recall Score</a>
+               </li>
+               <li class="nav-item">
+                  <a href="#f1" class="nav-link" data-bs-toggle="tab">F1</a>
+               </li>
+            </ul>
+         </div>
+         <div class="card-body">
+            <div class="tab-content">
+               <div class="tab-pane fade show active" id="Accuracy">
+                  <!-- item -->
+                  <div class="row">
+                     <!-- Accuracy -->
+                     <div class="text-center col-8 m-0 p-0 ">
+                        <h2>Chart Accuracy</h2>
+                        <div>
+                           <a href="data:image/png;base64,{{img.0}}" download="Chart">
+                           <img src="data:image/png;base64,{{img.0}}" class="m-0 rounded shadow" style="width:100%;height:auto">
+                           <span class="btn btn-success rounded shadow btn-outline-white p-2 mt-2">Save Image</span>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-3">
+                        <h2 class="text-center" style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">
+                           <b>List Accuracy</b>
+                        </h2>
+                        <table class="table table-hover" style="font-size: 0.75em;">
+                           <tr class="table-dark">
+                              <th>Age</th>
+                              <th>Accuracy</th>
+                           </tr>
+                           {% for item in array_SUM.0 %}
+                           <tr class="table-primary">
+                              <td>{{item.numbercut}}</td>
+                              <td>{{item.accuracy}}</td>
+                           </tr>
+                           {% endfor %}
+                        </table>
+                        <!-- <button class="btn btn-primary mt-2 d-none" onclick="tableToCSV()">Save Data</button>   -->
+                     </div>
+                     <!-- end Accuracy -->
+                  </div>
+                  <!-- item -->
+               </div>
+               <div class="tab-pane fade" id="RecallScore">
+                  <!-- item -->
+                  <div class="row">
+                     <!-- Precision Score -->
+                     <div class="text-center col-8 m-0 p-0 ">
+                        <h2>Chart Recall Score</h2>
+                        <div>
+                           <a href="data:image/png;base64,{{img.1}}" download="Chart">
+                           <img src="data:image/png;base64,{{img.1}}" class="m-0 rounded shadow" style="width:100%;height:auto">
+                           <span class="btn btn-success rounded shadow btn-outline-white p-2 mt-2">Save Image</span>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-3">
+                        <h2 class="text-center" style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">
+                           <b>List Precision Score</b>
+                        </h2>
+                        <table class="table table-hover" style="font-size: 0.75em;">
+                           <tr class="table-dark">
+                              <th>Age</th>
+                              <th>Precision Score</th>
+                           </tr>
+                           {% for item in array_SUM.1 %}
+                           <tr class="table-primary">
+                              <td>{{item.numbercut}}</td>
+                              <td>{{item.accuracy}}</td>
+                           </tr>
+                           {% endfor %}
+                        </table>
+                        <!-- <button class="btn btn-primary mt-2 d-none" onclick="tableToCSV()">Save Data</button>   -->
+                     </div>
+                     <!-- end Precision Score -->
+                  </div>
+                  <!-- item -->
+               </div>
+               <div class="tab-pane fade" id="recallscore">
+                  <!-- item -->
+                  <div class="row">
+                     <!-- RecallScore -->
+                     <div class="text-center col-8 m-0 p-0 ">
+                        <h2>Chart Recall Score</h2>
+                        <div>
+                           <a href="data:image/png;base64,{{img.2}}" download="Chart">
+                           <img src="data:image/png;base64,{{img.2}}" class="m-0 rounded shadow" style="width:100%;height:auto">
+                           <span class="btn btn-success rounded shadow btn-outline-white p-2 mt-2">Save Image</span>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-3">
+                        <h2 class="text-center" style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">
+                           <b>List Recall Score</b>
+                        </h2>
+                        <table class="table table-hover" style="font-size: 0.75em;">
+                           <tr class="table-dark">
+                              <th>Age</th>
+                              <th>Recall Score</th>
+                           </tr>
+                           {% for item in array_SUM.2 %}
+                           <tr class="table-primary">
+                              <td>{{item.numbercut}}</td>
+                              <td>{{item.accuracy}}</td>
+                           </tr>
+                           {% endfor %}
+                        </table>
+                        <!-- <button class="btn btn-primary mt-2 d-none" onclick="tableToCSV()">Save Data</button>   -->
+                     </div>
+                     <!-- end RecallScore -->
+                  </div>
+                  <!-- item -->
+               </div>
+               <div class="tab-pane fade" id="f1">
+                  <!-- item -->
+                  <div class="row">
+                     <!-- Precision Score -->
+                     <div class="text-center col-8 m-0 p-0 ">
+                        <h2>Chart F1</h2>
+                        <div>
+                           <a href="data:image/png;base64,{{img.3}}" download="Chart">
+                           <img src="data:image/png;base64,{{img.3}}" class="m-0 rounded shadow" style="width:100%;height:auto">
+                           <span class="btn btn-success rounded shadow btn-outline-white p-2 mt-2">Save Image</span>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-3">
+                        <h2 class="text-center" style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">
+                           <b>List F1</b>
+                        </h2>
+                        <table class="table table-hover" style="font-size: 0.75em;">
+                           <tr class="table-dark">
+                              <th>Age</th>
+                              <th>Precision Score</th>
+                           </tr>
+                           {% for item in array_SUM.3 %}
+                           <tr class="table-primary">
+                              <td>{{item.numbercut}}</td>
+                              <td>{{item.accuracy}}</td>
+                           </tr>
+                           {% endfor %}
+                        </table>
+                        <!-- <button class="btn btn-primary mt-2 d-none" onclick="tableToCSV()">Save Data</button>   -->
+                     </div>
+                     <!-- end Precision Score -->
+                  </div>
+                  <!-- item -->
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endif %}
+{% endblock %}

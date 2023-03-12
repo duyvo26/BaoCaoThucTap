@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}Trang chủ{% endblock %}
+{% block content %}
+{% if uploaded_file_url %}
+<h1>{{uploaded_file_url}}</h1>
+{% endif %}
+<!-- First Container -->
+<div class="container-fluid bg-2 " onload="generateInputs()">
+    <a class="d-flex justify-content-end"  href="{% url 'setting' %}">
+    <button class="input-group-text bg-dark text-white" style="display: none" id="CaiDat" style="submit">Cài đặt</button>
+    </a>
+    <form class="was-validated " method="post" action="{% url 'ChuanDoanPost' %}"  enctype="multipart/form-data" >
+        <h2 class="col-12 text-center" id="TieuDeDoan"></h2>
+        {% csrf_token %}
+        <input id='S_input' hidden name='S_input' >
+        <input id='ListNameClass' hidden name='ListNameClass' >
+        <div class="custom-file mb-3">
+            <input required type="file" class="custom-file-input" id="input-file" accept=".zip,.sav" name="input-file">
+            <label class="custom-file-label" for="input-file" id="lable-input-file-cut">File .zip, .sav Model</label>
+        </div>
+        <hr>
+        <h5>Loại Chuẩn đoán</h5>
+        <select required class="custom-select" name="selectChuanDoan" id="selectChuanDoan">
+            <option value="Input" select>Nhập input</option>
+            <option value="UpCSV" style='display: none' id="loadAdmin_1">Upload File</option>
+            <option value="Chuoi" style='display: none' id="loadAdmin_2">Nhập chuỗi input</option>
+        </select>
+        <hr>
+        <h5>Chọn mô hình dự đoán</h5>
+        <select required onchange="SetDataIn(this.options[this.selectedIndex].value)" class="custom-select" name="select" id="SelectMod">
+            <option style="display: none;" id='GaussianNB' value="CoDien">Naive Bayes(GaussianNB)</option>
+            <option  style="display: none;"  id='DecisionTreeClassifier' value="CoDien">Decision Tree</option>
+            <option  style="display: none;"  id='KNeighborsClassifier' value="CoDien">K-Nearest Neighbors</option>
+            <option   style="display: none;"  id='BernoulliNB' value="CoDien">BernoulliNB</option>
+            <option  style="display: none;"  id='ExtraTreeClassifier' value="CoDien">ExtraTreeClassifier</option>
+            <option  style="display: none;"  id='BaggingClassifier' value="CoDien">Bagging classifier</option>
+            <option  style="display: none;"  id='AdaBoostClassifier' value="CoDien">AdaBoost Classifier</option>
+            <option  style="display: none;"  id='MLPClassifier' value="CoDien">MLPClassifier</option>
+            <option  style="display: none;"  id='LinearDiscriminantAnalysis' value="CoDien">Linear Discriminant Analysis</option>
+            <option  style="display: none;"  id='RandomForestClassifier' value="CoDien">RandomForestClassifier</option>
+        </select>
+        <hr>
+        <div id="UploadFile" style="display: none;">
+            <h5>Tải lên file Test</h5>
+            <div class="custom-file mb-3"  >
+                <input  type="file" class="custom-file-input" id="input-CSV" accept=".csv" name="input-fileCSV">
+                <label class="custom-file-label" for="input-file" id="lable-input-file-CSV">File Test .csv</label>
+            </div>
+        </div>
+        <div id="inputF" style="display: none;">
+            <h5>Các tham số đầu vào input</h5>
+            <div class="p-0 my-12 d-flex flex-row justify-content-between" >
+                <div id="inputContainer" class="row"></div>
+            </div>
+        </div>
+        <div id="inputL" style="display: none;">
+            <h5>Các tham số đầu vào chuỗi</h5>
+            <div class="p-0 my-12 d-flex flex-row justify-content-between" >
+                <input name='inputSum' class="form-control">
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-center">
+            <button style='display: none' class="input-group-text bg-dark text-white" id="btnBatDau" style="submit">Bắt đầu dự đoán</button>
+        </div>
+    </form>
+    {% if ketqua %}
+    <script>
+        document.getElementById('KQ').scrollIntoView({
+        behavior: 'smooth'
+        });
+        
+    </script>
+    <div style="margin-top: 50px;" class="alert alert-danger" id="KQ" role="alert">
+        <h3>
+            {{ketqua}}  
+        </h3>
+    </div>
+    {% endif %}
+    <style>
+        .custom-file-input:lang(en)~.custom-file-label::after {
+        content: "Choose File";
+        }
+    </style>
+    <script>
+        //load cau hinh
+        document.getElementById('TieuDeDoan').innerHTML = getCookie("TieuDeDoan");
+        
+        listMOhinh = getCookie("ListMoHinh").split(',');
+        
+        
+        try {
+        
+        for(let i = 0; i < listMOhinh.length; i ++){
+           document.getElementById(listMOhinh[i]).style.display = 'block';
+        }
+        }
+        catch(err) {
+        console.log("Chưa cài đặt")
+        }
+        
+        // Lấy đối tượng select
+           var select = document.getElementById("selectChuanDoan");
+        
+           // Bắt sự kiện khi giá trị của select box thay đổi
+           {% comment %} select.addEventListener("change", function() { {% endcomment %}
+           // Lấy giá trị của option được chọn
+           var selectedValue = select.value;
+           
+              document.getElementById("UploadFile").style.display = 'none';
+              document.getElementById("inputL").style.display = 'none';
+              document.getElementById("inputF").style.display = 'none';
+              
+        
+           console.log(selectedValue);
+           if(selectedValue == "UpCSV"){
+              document.getElementById("UploadFile").style.display = 'block';
+           }
+           if(selectedValue == "Chuoi"){
+              document.getElementById("inputL").style.display = 'block';
+           }
+           if(selectedValue == "Input"){
+              document.getElementById("inputF").style.display = 'block';
+           }
+        
+           {% comment %} }); {% endcomment %}
+        
+        
+        
+        $("#input-file").on("change", function () {
+             var fileName = $(this).val().split("\\").pop();
+             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+           
+           });
+        
+                 $("#input-CSV").on("change", function () {
+             var fileName = $(this).val().split("\\").pop();
+             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+           
+           });
+        
+           //check da cai dat
+           var check1 = getCookie('ListNameClass');
+           var check2 = getCookie('ListNameThamSO');
+           if( check1=! 'null' || check2 != 'null'){
+              document.getElementById("btnBatDau").style.display = 'block';
+           };
+           
+           // sinh ra cac o nhap tham
+              var n = getCookie('LengNameThamSo');
+              document.getElementById("S_input").value = n;
+              document.getElementById("ListNameClass").value = getCookie('ListNameClass');
+              
+              var inputContainer = document.getElementById("inputContainer");
+              inputContainer.innerHTML = "";
+              for (var i = 0; i < n; i++) {
+              var inputGroup = document.createElement("div");
+              inputGroup.className = "col-3 md-3";
+              var input = document.createElement("input");
+              input.type = "text";
+              //input.required = "required";
+              input.name = "input" + i;
+              input.className = "form-control";
+              // get name da luu
+              var ListNameThamSO = getCookie('ListNameThamSO').split(",");;
+              console.log(ListNameThamSO);
+              input.placeholder = ListNameThamSO[i];
+          
+          
+              inputGroup.appendChild(input);
+              inputContainer.appendChild(inputGroup);
+              }
+        function check_value(e) {
+            var input = document.querySelectorAll("input[type=number]")
+            check_true = 1;
+            for (var i = 0; i < input.length; i++) {
+                if (input[i].value <= input[i].max & input[i].value >= input[i].min) {
+                    check_true += 1;
+                }
+                else {
+                    alert(f`Please Check the value of ${input[i].name}`)
+                    break;
+                }
+        
+            }
+            if (check_true == input.length) {
+                e.parentElement.parentElement.submit();
+            }
+        }
+    </script>
+    <!-- end form -->
+</div>
+{% endblock %}

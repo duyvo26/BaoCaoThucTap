@@ -1,0 +1,87 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- tieu de -->
+<title>Title</title>
+<!-- tieu de -->
+
+<!-- body -->
+<div class="row">
+    <div class="col" onclick="ClickLoad('Lhome')">Home</div>
+    <div class="col" onclick="ClickLoad('Lcode')"  id="GiaiThuatCoDien_Show" style="display: none;">GiaiThuat</div>
+    <div class="col " onclick="ClickLoad('LlistModel')" id="listModel" style="display: none;">List Model</div>
+    <div class="col" onclick="setCookie('login', 'null'); location.reload();" id='login' style="display: none;" >Đăng xuất</div>
+</div>
+<!-- menu -->
+
+
+<!-- body -->
+<iframe  onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' src="{{ request.scheme  }}://{{ request.get_host }}/home" id="LoadWeb" width="100%" height="100%"></iframe>
+<!-- end body -->
+
+FOOTER
+
+<script type="text/javascript">
+	   function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return 'null';
+}
+
+
+var Lhome = window.location.href + 'home';
+var Lcode = window.location.href + 'GiaiThuatCoDien_Show';
+var LlistModel = window.location.href + 'listModel';
+
+function ClickLoad(val) {
+    if (val == 'Lhome') {
+        document.getElementById('LoadWeb').src = Lhome;
+    } else if (val == 'Lcode') {
+        document.getElementById('LoadWeb').src = Lcode;
+    } else if (val == 'LlistModel') {
+        document.getElementById('LoadWeb').src = LlistModel;
+    }
+
+}
+
+if (getCookie('login') != "null") {
+    document.getElementById('login').style.display = 'block';
+    document.getElementById('GiaiThuatCoDien_Show').style.display = 'block';
+    document.getElementById('listModel').style.display = 'block';
+
+	
+}
+
+if (getCookie('login') == '4b83eccc1e1a5a9d9eb8ace38bb82f4b') {
+    try {
+
+        document.getElementById('One_GiaiThuatCoDien').style.display = 'block'; {}
+        document.getElementById('listModel').style.display = 'block'; {}
+        document.getElementById('CaiDat').style.display = 'block';
+    } catch (err) {
+        console.log("Chưa cài đặt slect")
+    }
+
+    document.getElementById('selectMOdel').style.display = 'block';
+
+    try {
+        document.getElementById('loadAdmin_1').style.display = 'block';
+        document.getElementById('loadAdmin_2').style.display = 'block';
+    } catch (err) {
+        console.log("Chưa cài đặt slect")
+    }
+}
+</script>
