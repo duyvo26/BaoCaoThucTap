@@ -35,14 +35,14 @@
    <div id="bodsy">
       {% block content %}{% endblock %}
    </div>
-   {% comment %} <style>
+ <style>
    .container-fluid {
-      background: url('{{ request.scheme  }}://{{ request.get_host }}/static/images/black.jpg');
+      {% comment %} background: url('{{ request.scheme  }}://{{ request.get_host }}/static/images/black.jpg'); {% endcomment %}
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
    }
-   </style> {% endcomment %}
+   </style>
 <script>
    // Set the default font and color values
     var selectedFont = getCookie("font") || "Arial, sans-serif";
