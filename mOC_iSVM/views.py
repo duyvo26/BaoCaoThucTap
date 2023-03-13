@@ -24,6 +24,10 @@ import os
 import zipfile
 import pandas as pd
 import sys
+import json
+from django.http import HttpResponse
+
+
 # dung chung
 sys.stdin.reconfigure(encoding='utf-8')
 sys.stdout.reconfigure(encoding='utf-8')
@@ -175,7 +179,36 @@ def load (request):
 
 
 def setting(request):
-    return render(request, 'home/setting.html')
+    fontSize = range(10, 55);
+    return render(request, 'home/setting.html', {'fontSize': fontSize})
+
+
+def setting_POST(request):
+    if request.method == 'POST':
+        
+        myfile = request.FILES['input-file']
+        fs = FileSystemStorage(settings.MEDIA_ROOT +
+                               '/media/'+request.COOKIES.get('id')+'/FileLoadModel/')
+        filename = fs.save(myfile.name, myfile)
+        
+        fileAnh = request.FILES['input-anhNen']
+        fs = FileSystemStorage(settings.MEDIA_ROOT +
+                               '/images/FileLoadAnhNen/')
+        filename = fs.save(fileAnh.name, fileAnh)
+        
+        
+        
+        from django.http import JsonResponse
+        data = {
+            'myfile': myfile.name,
+            'fileAnh': fileAnh.name,
+            
+            'thongbao': 'Tải lên thành công'
+        }
+        print("myfile", myfile.name)
+        return JsonResponse(data)
+
+
 
 
 def showData(request):

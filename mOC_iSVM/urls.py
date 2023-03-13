@@ -12,6 +12,9 @@ urlpatterns = [
     
     
     path("setting", mOC_iSVM.views.setting, name='setting'),
+    path("setting_POST", mOC_iSVM.views.setting_POST, name='setting_POST'),
+    
+    
     path("showData", mOC_iSVM.views.showData, name='showData'),
     path("listModel", mOC_iSVM.views.listModel,
             name='listModel'),

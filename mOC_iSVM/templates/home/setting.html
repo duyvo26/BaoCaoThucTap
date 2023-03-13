@@ -9,6 +9,99 @@
    <h2 class="col-12 text-center">Cấu hình dự đoán</h2>
    <!-- ten tham so -->
    <div>
+      <form  id="UplaodMOdel" enctype="multipart/form-data">
+         {% csrf_token %}
+         <h5 >File mô hình dự đoán</h5>
+         <div class="custom-file mb-3">
+            <input required type="file" class="custom-file-input" id="input-file" accept=".sav" name="input-file">
+            <label class="custom-file-label" for="input-file" id="lable-input-file-cut">File .sav Model</label>
+         </div>
+         <h5 >File Ảnh nền</h5>
+         <div class="custom-file mb-3">
+            <input required type="file" class="custom-file-input" id="input-file" accept=".jpg" name="input-anhNen">
+            <label class="custom-file-label" for="input-file" id="lable-input-file-cut">File .jpg</label>
+         </div>
+         <input  class="btn btn-lg btn-block btn-danger" type="submit" value='Tải lên'>
+      </form>
+      <div style="margin-top: 10px;" class="alert alert-danger" >FileName:&nbsp;<span id="nameFile">Null</span></div>
+      <div style="margin-top: 10px;" class="alert alert-danger" >File ảnh nền :&nbsp;<span id="fileAnh">Null</span></div>
+      <script>
+         $("#input-file").on("change", function () {
+         var fileName = $(this).val().split("\\").pop();
+         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+         
+         });
+         
+         
+         if(getCookie('fileModel') != 'null'){
+         document.getElementById("nameFile").innerHTML = getCookie('fileModel');
+         document.getElementById("fileAnh").innerHTML = getCookie('fileAnh');
+         }
+         $("#UplaodMOdel").submit(function(e) {
+         e.preventDefault(); // cancel click
+         var form_data = new FormData(document.getElementById("UplaodMOdel"));
+         $.ajax({
+         url: "{% url 'setting_POST' %}",
+         type:'POST',   
+         data: form_data,
+         processData: false,
+         contentType: false,
+         success: function(data) {
+          setCookie("fileModel", data.myfile, 365);
+          setCookie("fileAnh", data.fileAnh, 365);
+           document.getElementById("nameFile").innerHTML = data.myfile;
+           document.getElementById("fileAnh").innerHTML = data.fileAnh;   
+          alert(data.thongbao);
+         },
+         error: function(data)
+         {
+           console.log(data);
+         }
+         }); 
+         });
+         
+         
+      </script>
+      <hr>
+      <label for="font-selector" class="form-label">Select font:</label>
+      <select id="font-selector" class="form-control">
+         <option value="Arial, sans-serif">Arial</option>
+         <option value="Times New Roman, serif">Times New Roman</option>
+         <option value="Courier New, monospace">Courier New</option>
+         <option value="Verdana, sans-serif">Verdana</option>
+      </select>
+      <label for="color-selector" class="form-label">Select color:</label>
+      <input type="color" id="color-selector" class="form-control">
+      <button id="apply-button" style="margin-top: 10px;" class="btn btn-lg btn-block btn-danger">Lưu cài đặt</button>
+      <script>
+         // Set the default font and color values
+         var selectedFont = getCookie("font") || "Arial, sans-serif";
+         var selectedColor = getCookie("color") || "#000000";
+         
+         // Set the initial values of the selectors
+         var fontSelector = document.getElementById("font-selector");
+         var colorSelector = document.getElementById("color-selector");
+         fontSelector.value = selectedFont;
+         colorSelector.value = selectedColor;
+         
+         // Apply the font and color settings to the text container
+         var textContainer = document.querySelector(".container-fluid");
+         textContainer.style.fontFamily = selectedFont;
+         textContainer.style.color = selectedColor;
+         
+         // Add an event listener to the Apply button
+         var applyButton = document.getElementById("apply-button");
+         applyButton.addEventListener("click", function() {
+         var newFont = fontSelector.value;
+         var newColor = colorSelector.value;
+         textContainer.style.fontFamily = newFont;
+         textContainer.style.color = newColor;
+         setCookie("font", newFont, 365);
+         setCookie("color", newColor, 365);
+         alert("Lưu cài đặt thành công");
+         });
+      </script>
+      <hr>
       <h5 >Tiêu đề dự đoán</h5>
       <input type="text" name="S_input" class="form-control" id="TieuDeDoan">
       <h5 >Tên các tham số đầu vào</h5>
@@ -85,10 +178,10 @@
          Login();
        }else{
          if (MD5_(mk) == '4b83eccc1e1a5a9d9eb8ace38bb82f4b'){
-             setCookie('login', MD5_(mk), 30);
+             setCookie('login', MD5_(mk), 365);
              alert("Đăng nhập thành công");
          }else{
-             setCookie('login', MD5_(mk), 30);
+             setCookie('login', MD5_(mk), 365);
              alert("Đăng nhập thành công");
          }
          location.reload();
@@ -96,7 +189,7 @@
      }
    }
    
-
+   
    
       const ListMoHinh = [];
       function selectMohinh(id){
@@ -121,17 +214,17 @@
               ListNameClass.push(LengThamSo);
          }
    
-         setCookie('LengNameThamSo', LengNameThamSo, 30);
-         setCookie('ListNameThamSO', ListNameThamSO, 30);
+         setCookie('LengNameThamSo', LengNameThamSo, 365);
+         setCookie('ListNameThamSO', ListNameThamSO, 365);
     //Class
-         setCookie('LengNameClass', LengNameClass, 30);
-         setCookie('ListNameClass', ListNameClass, 30);
+         setCookie('LengNameClass', LengNameClass, 365);
+         setCookie('ListNameClass', ListNameClass, 365);
    // TieuDeDoan
          var TieuDeDoan = document.getElementById('TieuDeDoan').value;
-         setCookie('TieuDeDoan', TieuDeDoan, 30);
+         setCookie('TieuDeDoan', TieuDeDoan, 365);
    // ListMoHinh
    
-         setCookie('ListMoHinh', ListMoHinh, 30);
+         setCookie('ListMoHinh', ListMoHinh, 365);
    
          console.log(ListNameThamSO, ListNameClass);
          alert("Các tham số được lưu thành công");
