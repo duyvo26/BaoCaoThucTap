@@ -185,27 +185,34 @@ def setting(request):
 
 def setting_POST(request):
     if request.method == 'POST':
-        
-        myfile = request.FILES['input-file']
-        fs = FileSystemStorage(settings.MEDIA_ROOT +
-                               '/media/'+request.COOKIES.get('id')+'/FileLoadModel/')
-        filename = fs.save(myfile.name, myfile)
-        
-        fileAnh = request.FILES['input-anhNen']
-        fs = FileSystemStorage(settings.MEDIA_ROOT +
-                               '/images/FileLoadAnhNen/')
-        filename = fs.save(fileAnh.name, fileAnh)
-        
+        myfile, fileAnh = "", ''
+        try:
+            myfile = request.FILES['input-file']
+            fs = FileSystemStorage(settings.MEDIA_ROOT +
+                                '/media/'+request.COOKIES.get('id')+'/FileLoadModel/')
+            filename = fs.save(myfile.name, myfile)
+            myfile = myfile.name
+        except:
+            myfile = ''
+
+        try:
+            fileAnh = request.FILES['input-anhNen']
+            fs = FileSystemStorage(settings.MEDIA_ROOT +
+                                '/images/FileLoadAnhNen/')
+            filename = fs.save(fileAnh.name, fileAnh)
+            fileAnh = fileAnh.name
+        except:
+            fileAnh = ''
         
         
         from django.http import JsonResponse
         data = {
-            'myfile': myfile.name,
-            'fileAnh': fileAnh.name,
+            'myfile': myfile,
+            'fileAnh': fileAnh,
             
             'thongbao': 'Tải lên thành công'
         }
-        print("myfile", myfile.name)
+
         return JsonResponse(data)
 
 
@@ -388,12 +395,16 @@ def ChuanDoan(request):
     if request.method == 'POST':
         # upload file len
         # input-file
-        myfile = request.FILES['input-file']
-        fs = FileSystemStorage(
-            settings.MEDIA_ROOT+'/media/' + request.COOKIES.get('id')+'/tmp/UpModel/')
-        filename = fs.save(myfile.name, myfile)
+        # myfile = request.FILES['input-file']
+        # fs = FileSystemStorage(
+        #     settings.MEDIA_ROOT+'/media/' + request.COOKIES.get('id')+'/tmp/UpModel/')
+        # filename = fs.save(myfile.name, myfile)
+        
+        # settings.MEDIA_ROOT +
+        #                         '/media/'+request.COOKIES.get('id')+'/FileLoadModel/
+                                
         FileModel = settings.MEDIA_ROOT+'/media/' + \
-            request.COOKIES.get('id')+'/tmp/UpModel/' + myfile.name
+            request.COOKIES.get('id')+'/FileLoadModel/' +  request.POST['FileMOdel']
 
         # select mo hinh du doan
         select = request.POST['select']

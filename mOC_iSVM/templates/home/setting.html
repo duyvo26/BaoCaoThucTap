@@ -18,7 +18,7 @@
          </div>
          <h5 >File Ảnh nền</h5>
          <div class="custom-file mb-3">
-            <input  type="file" class="custom-file-input" id="input-file" accept=".jpg" name="input-anhNen">
+            <input  type="file" class="custom-file-input" id="input-anhNen" accept=".jpg" name="input-anhNen">
             <label class="custom-file-label" for="input-file" id="lable-input-file-cut">File .jpg</label>
          </div>
          <input  class="btn btn-lg btn-block btn-danger" type="submit" value='Tải lên'>
@@ -26,6 +26,14 @@
       <div style="margin-top: 10px;" class="alert alert-danger" >FileName:&nbsp;<span id="nameFile">Null</span></div>
       <div style="margin-top: 10px;" class="alert alert-danger" >File ảnh nền :&nbsp;<span id="fileAnh">Null</span></div>
       <script>
+          $("#input-anhNen").on("change", function () {
+         var fileName = $(this).val().split("\\").pop();
+         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+         
+         });
+         
+
+
          $("#input-file").on("change", function () {
          var fileName = $(this).val().split("\\").pop();
          $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
@@ -47,11 +55,18 @@
          processData: false,
          contentType: false,
          success: function(data) {
-          setCookie("fileModel", data.myfile, 365);
-          setCookie("fileAnh", data.fileAnh, 365);
-           document.getElementById("nameFile").innerHTML = data.myfile;
+            if(data.myfile != ''){
+                  setCookie("fileModel", data.myfile, 365);
+                  document.getElementById("nameFile").innerHTML = data.myfile;
+            }
+            if(data.fileAnh != ''){
+                  setCookie("fileAnh", data.fileAnh, 365);
            document.getElementById("fileAnh").innerHTML = data.fileAnh;   
+
+            }
+           
           alert(data.thongbao);
+          location.reload();
          },
          error: function(data)
          {

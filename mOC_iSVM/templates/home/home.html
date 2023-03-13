@@ -14,6 +14,10 @@
       {% csrf_token %}
       <input id='S_input' hidden name='S_input' >
       <input id='ListNameClass' hidden name='ListNameClass' >
+      <input id='FileMOdel' hidden name='FileMOdel' >
+      <script>
+         document.getElementById("FileMOdel").val = getCookie("fileModel");
+      </script>
       <hr>
       <h5>Loại Chuẩn đoán</h5>
       <select required class="custom-select" name="selectChuanDoan" id="selectChuanDoan">
