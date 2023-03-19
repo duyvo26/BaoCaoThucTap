@@ -43,12 +43,35 @@
       background-size: cover;
    }
    </style>
+
+
+
 <script>
+  
+  
+
    // Set the default font and color values
     var selectedFont = getCookie("font") || "Arial, sans-serif";
     var selectedColor = getCookie("color") || "#000000";
+    var Fsize = getCookie("Fsize")+"px" || "18px";
 
 
+   document.body.style.fontSize = Fsize;
+
+   var inputGroupText = document.getElementsByClassName("input-group-text");
+   for(var i=0; i<inputGroupText.length; i++) {
+   inputGroupText[i].style.fontSize = Fsize; // Set the font size to 16px
+   }
+   var inputGroupText = document.getElementsByClassName("form-control");
+   for(var i=0; i<inputGroupText.length; i++) {
+   inputGroupText[i].style.fontSize = Fsize; // Set the font size to 16px
+   }
+   var inputGroupText = document.getElementsByClassName("custom-select");
+   for(var i=0; i<inputGroupText.length; i++) {
+   inputGroupText[i].style.fontSize = Fsize; // Set the font size to 16px
+   }
+
+   
 
     // Apply the font and color settings to the text container
     var textContainer = document.querySelector(".container-fluid");

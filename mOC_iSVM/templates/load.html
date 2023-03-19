@@ -8,6 +8,7 @@
     <div class="col" onclick="ClickLoad('Lhome')">Home</div>
     <div class="col" onclick="ClickLoad('Lcode')"  id="GiaiThuatCoDien_Show" style="display: none;">GiaiThuat</div>
     <div class="col " onclick="ClickLoad('LlistModel')" id="listModel" style="display: none;">List Model</div>
+    <div class="col " onclick="ClickLoad('CaiDats')" id="CaiDats" style="display: none;">Cài đặt</div>
     <div class="col" onclick="setCookie('login', 'null'); location.reload();" id='login' style="display: none;" >Đăng xuất</div>
 </div>
 <!-- menu -->
@@ -45,6 +46,7 @@ function getCookie(name) {
 var Lhome = window.location.href + 'home';
 var Lcode = window.location.href + 'GiaiThuatCoDien_Show';
 var LlistModel = window.location.href + 'listModel';
+var CaiDats = window.location.href + 'caidat';
 
 function ClickLoad(val) {
     if (val == 'Lhome') {
@@ -53,6 +55,8 @@ function ClickLoad(val) {
         document.getElementById('LoadWeb').src = Lcode;
     } else if (val == 'LlistModel') {
         document.getElementById('LoadWeb').src = LlistModel;
+    } else if (val == 'CaiDats') {
+        document.getElementById('LoadWeb').src = CaiDats;
     }
 
 }
@@ -61,6 +65,7 @@ if (getCookie('login') != "null") {
     document.getElementById('login').style.display = 'block';
     document.getElementById('GiaiThuatCoDien_Show').style.display = 'block';
     document.getElementById('listModel').style.display = 'block';
+    document.getElementById('CaiDats').style.display = 'block';
 
 	
 }

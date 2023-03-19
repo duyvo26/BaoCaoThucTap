@@ -82,11 +82,25 @@
       <select id="font-selector" class="form-control">
          <option value="Arial, sans-serif">Arial</option>
          <option value="Times New Roman, serif">Times New Roman</option>
-         <option value="Courier New, monospace">Courier New</option>
-         <option value="Verdana, sans-serif">Verdana</option>
+         <option value="Courier New, monospace">Courier New</option>         
+      <option value="Verdana, sans-serif">Verdana</option>
+      <option value="Open Sans, sans-serif">Open Sans</option>
+      <option value="Roboto, sans-serif">Roboto</option>
+      <option value="Noto Sans, sans-serif">Noto Sans</option>
+      <option value="Montserrat, sans-serif">Montserrat</option>
+      <option value="Lato, sans-serif">Lato</option>
+      <option value="Source Sans Pro, sans-serif">Source Sans Pro</option>
+      <option value="Poppins, sans-serif">Poppins</option>
+      <option value="Fira Sans, sans-serif">Fira Sans</option>
+      <option value="Hind, sans-serif">Hind</option>
+      <option value="Quicksand, sans-serif">Quicksand</option>
       </select>
       <label for="color-selector" class="form-label">Select color:</label>
       <input type="color" id="color-selector" class="form-control">
+
+      <label for="Fsize-selector" class="form-label">Font Size:</label>
+      <input type="number" id="Fsize-selector" class="form-control">
+
       <button id="apply-button" style="margin-top: 10px;" class="btn btn-lg btn-block btn-danger">Lưu cài đặt</button>
       <script>
          // Set the default font and color values
@@ -109,10 +123,14 @@
          applyButton.addEventListener("click", function() {
          var newFont = fontSelector.value;
          var newColor = colorSelector.value;
+         var Fsize = document.getElementById("Fsize-selector").value;
          textContainer.style.fontFamily = newFont;
          textContainer.style.color = newColor;
          setCookie("font", newFont, 365);
          setCookie("color", newColor, 365);
+         setCookie("Fsize", Fsize, 365);
+
+         
          alert("Lưu cài đặt thành công");
          });
       </script>
