@@ -179,8 +179,13 @@ def load (request):
 
 
 def setting(request):
-    fontSize = range(10, 55);
+    fontSize = range(10, 55)
     return render(request, 'home/setting.html', {'fontSize': fontSize})
+
+def caidat(request):
+    fontSize = range(10, 55)
+    return render(request, 'home/caidat.html', {'fontSize': fontSize})
+
 
 
 def setting_POST(request):

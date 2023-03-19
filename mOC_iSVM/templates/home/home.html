@@ -16,18 +16,18 @@
       <input id='ListNameClass' hidden name='ListNameClass' >
       <input id='FileMOdel' hidden name='FileMOdel' >
       <script>
-         document.getElementById("FileMOdel").val = getCookie("fileModel");
+         document.getElementById("FileMOdel").value = getCookie("fileModel");
       </script>
       <hr>
-      <h5>Loại Chuẩn đoán</h5>
-      <select required class="custom-select" name="selectChuanDoan" id="selectChuanDoan">
+      <h5 hidden>Loại Chuẩn đoán</h5>
+      <select hidden required class="custom-select" name="selectChuanDoan" id="selectChuanDoan">
          <option value="Input" select>Nhập input</option>
          <option value="UpCSV" style='display: none' id="loadAdmin_1">Upload File</option>
          <option value="Chuoi" style='display: none' id="loadAdmin_2">Nhập chuỗi input</option>
       </select>
       <hr>
-      <h5>Chọn mô hình dự đoán</h5>
-      <select required onchange="SetDataIn(this.options[this.selectedIndex].value)" class="custom-select" name="select" id="SelectMod">
+      <h5 hidden>Chọn mô hình dự đoán</h5>
+      <select hidden required onchange="SetDataIn(this.options[this.selectedIndex].value)" class="custom-select" name="select" id="SelectMod">
          <option style="display: none;" id='GaussianNB' value="CoDien">Naive Bayes(GaussianNB)</option>
          <option  style="display: none;"  id='DecisionTreeClassifier' value="CoDien">Decision Tree</option>
          <option  style="display: none;"  id='KNeighborsClassifier' value="CoDien">K-Nearest Neighbors</option>
@@ -109,14 +109,13 @@
       listMOhinh = getCookie("ListMoHinh").split(',');
       
       
-      try {
-      
-      for(let i = 0; i < listMOhinh.length; i ++){
-         document.getElementById(listMOhinh[i]).style.display = 'block';
-      }
+      try {      
+         for(let i = 0; i < listMOhinh.length; i ++){
+            document.getElementById(listMOhinh[i]).style.display = 'block';
+         }
       }
       catch(err) {
-      console.log("Chưa cài đặt")
+         console.log("Chưa cài đặt");
       }
       
       // Lấy đối tượng select
