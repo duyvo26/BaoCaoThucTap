@@ -1,42 +1,73 @@
 from datetime import datetime
 import io
-import re
-from unicodedata import name
 from django.shortcuts import redirect, render
-from django.http import HttpResponse, StreamingHttpResponse
-import json
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import os
 import base64
 import urllib
 import os
-from matplotlib.font_manager import json_dump
-from numpy import array, partition
-from django.views.decorators.csrf import csrf_protect
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from mOC_iSVM.static.CodeCoDien import Select_Model
-from mOC_iSVM.static.ChucNang import ChuanDoanCoDien
+from CodeThucTap.static.CodeCoDien import Select_Model
+from CodeThucTap.static.ChucNang import ChuanDoanCoDien
 from matplotlib import pyplot as plt
-import shutil
 import csv
 import numpy as np
 import os
-import zipfile
-import pandas as pd
 import sys
-import json
 from django.http import HttpResponse
-
+from django.http import JsonResponse
 
 # dung chung
 sys.stdin.reconfigure(encoding='utf-8')
 sys.stdout.reconfigure(encoding='utf-8')
 
+LoginCheck = False
 
+
+@csrf_exempt
+def Login_POST(request):
+    global LoginCheck
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        # doc file csv data
+        with open("dataUser.csv") as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for row in csv_reader:
+                print(email, row[0], password, row[1])
+                if email == row[0] and password == row[1]:
+                    data = {
+                        'id': get_random_string(12),
+                        'thongbao': 'Đăng nhập thành công'
+                    }
+                    LoginCheck = True
+                    return JsonResponse(data)
+        # dang nhap fail
+        data = {
+            'id': 'null',
+            'thongbao': 'Đăng nhập thất thất bại'
+        }
+        return JsonResponse(data) 
+    
+
+@csrf_exempt        
+def CheckLogin(request):
+    global LoginCheck
+    if len(request.COOKIES.get('login')) > 10:
+        LoginCheck = True
+        return True
+    if request.COOKIES.get('id') == '' or request.COOKIES.get('id') == None:
+        return render(request, 'Login.html')
+    else:
+        LoginCheck = True
+        return True
+        
+        
 def get_random_string(length):
     import random
     import string
-    # choose from all lowercase letter
     letters = string.ascii_lowercase
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
@@ -44,16 +75,13 @@ def get_random_string(length):
 
 def SaveFileDraw(request, name_, arr_out_ACC, arr_out_Precision, arr_out_Recall, arr_out_F1, numberCut, inputFor):
     import openpyxl
-    # Xác định số hàng và cột lớn nhất trong file excel cần tạo
     row = numberCut + 1
     column = inputFor + 1
-    # Tạo một workbook mới và active nó
     wb = openpyxl.Workbook()
     ws = wb.active
     import string
     for ass in string.ascii_lowercase[:14]:
         ws.column_dimensions[ass].width = 25
-    # Dùng vòng lặp for để ghi nội dung từ input_detail vào file Excel
     arrTam = []
     for i in range(0, row):
 
@@ -67,10 +95,8 @@ def SaveFileDraw(request, name_, arr_out_ACC, arr_out_Precision, arr_out_Recall,
     arr_out_Recall.insert(0, arrTam)
     arr_out_F1.insert(0, arrTam)
 
-    # print(arr_out_ACC)
     for i in range(0, row):
         for j in range(0, column):
-            # print(arr_out_ACC[j][i])
             if i == 0:
                 ws.cell(column=j+1, row=i+1,
                         value=str(arr_out_ACC[j][i]))
@@ -79,33 +105,32 @@ def SaveFileDraw(request, name_, arr_out_ACC, arr_out_Precision, arr_out_Recall,
                 ws.cell(column=j+1, row=i+1,
                         value=arr_out_ACC[j][i])
 
-    # arr_out_ACC, arr_out_Precision, arr_out_Recall, arr_out_F1
-    for i in range(row, row * 2):
-        for j in range(0, column):
+    # for i in range(row, row * 2):
+    #     for j in range(0, column):
 
-            if i == 0:
-                ws.cell(column=j+1, row=i+1,
-                        value=str(arr_out_Precision[j][i - row]))
-            else:
-                ws.cell(column=j+1, row=i+1,
-                        value=arr_out_Precision[j][i - row])
+    #         if i == 0:
+    #             ws.cell(column=j+1, row=i+1,
+    #                     value=str(arr_out_Precision[j][i - row]))
+    #         else:
+    #             ws.cell(column=j+1, row=i+1,
+    #                     value=arr_out_Precision[j][i - row])
 
-    for i in range(row * 2, row * 3):
-        for j in range(0, column):
-            if i == 0:
-                ws.cell(column=j+1, row=i+1,
-                        value=str(arr_out_Recall[j][i - (row * 2)]))
-            else:
-                ws.cell(column=j+1, row=i+1,
-                        value=arr_out_Recall[j][i - (row * 2)])
-    for i in range(row * 3, row * 4):
-        for j in range(0, column):
-            if i == 0:
-                ws.cell(column=j+1, row=i+1,
-                        value=str(arr_out_F1[j][i - (row * 3)]))
-            else:
-                ws.cell(column=j+1, row=i+1,
-                        value=arr_out_F1[j][i - (row * 3)])
+    # for i in range(row * 2, row * 3):
+    #     for j in range(0, column):
+    #         if i == 0:
+    #             ws.cell(column=j+1, row=i+1,
+    #                     value=str(arr_out_Recall[j][i - (row * 2)]))
+    #         else:
+    #             ws.cell(column=j+1, row=i+1,
+    #                     value=arr_out_Recall[j][i - (row * 2)])
+    # for i in range(row * 3, row * 4):
+    #     for j in range(0, column):
+    #         if i == 0:
+    #             ws.cell(column=j+1, row=i+1,
+    #                     value=str(arr_out_F1[j][i - (row * 3)]))
+    #         else:
+    #             ws.cell(column=j+1, row=i+1,
+    #                     value=arr_out_F1[j][i - (row * 3)])
 
     path_stock = settings.MEDIA_ROOT + \
         '/media/'+request.COOKIES.get('id')+'/'
@@ -115,14 +140,11 @@ def SaveFileDraw(request, name_, arr_out_ACC, arr_out_Precision, arr_out_Recall,
     dt_string = now.strftime("%d_%m_%Y___%H_%M_%S")
     output_excel_path = path_stock+'/Excel/' + \
         str(name_) + " " + str(dt_string)+'.xlsx'
-    # Lưu lại file Excel
     wb.save(output_excel_path)
     return download(request, output_excel_path)
 
 
 def download(request, file_path):
-
-    # if os.path.exists(file_path):
     with open(file_path, 'rb') as fh:
         response = HttpResponse(
             fh.read(), content_type="application/vnd.ms-excel")
@@ -141,20 +163,25 @@ def exportcsv(request, ma, loai):
     path = settings.MEDIA_ROOT + '/media/' + \
         request.COOKIES.get('id')+'/CutFile/'+namefile
 
-    # filename = obj.model_attribute_name.path
     from django.http import FileResponse
     response = FileResponse(open(path, 'rb'))
     return response
 
 
 def listModel(request):
-    try:
-        from mOC_iSVM.static import ChucNang
-        listModel = ChucNang.ShowModel(request.COOKIES.get('id'))
-    except:
-        listModel = ""
+    global LoginCheck
+    if LoginCheck == True:
+        try:
+            from CodeThucTap.static import ChucNang
+            listModel = ChucNang.ShowModel(request.COOKIES.get('id'))
+        except:
+            listModel = ""
 
-    return render(request, 'home/listModel.html', {"listModel": listModel})
+        return render(request, 'home/listModel.html', {"listModel": listModel})
+    else:
+        return render(request, 'Login.html')
+    
+
 
 
 def DowMOdel(request):
@@ -165,27 +192,33 @@ def DowMOdel(request):
     print(fileName)
     return download(request, fileName)
 
-# end dung chung #########################################################
 
 
-# home du doan mo hinh va cai dat
+def Login(request):
+        return render(request, 'Login.html')
+    
+    
 def index(request):
     return render(request, 'home/home.html')
 
-def load (request):
+
+
+
+def load(request):
+    global LoginCheck
+    if len(request.COOKIES.get('login')) > 10:
+        LoginCheck = True
     return render(request, 'load.html')
-
-
 
 
 def setting(request):
     fontSize = range(10, 55)
     return render(request, 'home/setting.html', {'fontSize': fontSize})
 
+
 def caidat(request):
     fontSize = range(10, 55)
     return render(request, 'home/caidat.html', {'fontSize': fontSize})
-
 
 
 def setting_POST(request):
@@ -194,7 +227,7 @@ def setting_POST(request):
         try:
             myfile = request.FILES['input-file']
             fs = FileSystemStorage(settings.MEDIA_ROOT +
-                                '/media/'+request.COOKIES.get('id')+'/FileLoadModel/')
+                                   '/media/'+request.COOKIES.get('id')+'/FileLoadModel/')
             filename = fs.save(myfile.name, myfile)
             myfile = myfile.name
         except:
@@ -203,30 +236,25 @@ def setting_POST(request):
         try:
             fileAnh = request.FILES['input-anhNen']
             fs = FileSystemStorage(settings.MEDIA_ROOT +
-                                '/images/FileLoadAnhNen/')
+                                   '/images/FileLoadAnhNen/')
             filename = fs.save(fileAnh.name, fileAnh)
             fileAnh = fileAnh.name
         except:
             fileAnh = ''
-        
-        
+
         from django.http import JsonResponse
         data = {
             'myfile': myfile,
             'fileAnh': fileAnh,
-            
+
             'thongbao': 'Tải lên thành công'
         }
 
         return JsonResponse(data)
 
 
-
-
 def showData(request):
     return render(request, 'home/showData.html')
-
-# ve bieu do
 
 
 def drawBieuDo(arr0, arr1, arr2, arr3, batch, name):
@@ -238,8 +266,8 @@ def drawBieuDo(arr0, arr1, arr2, arr3, batch, name):
             arr_for.append(float(i)*100)
 
         plt.plot(x_ve, arr_for, marker=5, linestyle='dashed',
-                 label="mOC_iSVM."+name)
-        plt.title("mOC_iSVM."+name)
+                 label="CodeThucTap."+name)
+        plt.title("CodeThucTap."+name)
         plt.axis([None, None, 0, 100])
         plt.legend()
         fig = plt.gcf()
@@ -263,17 +291,14 @@ def drawBieuDo(arr0, arr1, arr2, arr3, batch, name):
     return arr_URL, array_SUM
 
 
-# end home du doan mo hinh va cai dat
 def GiaiThuatCoDien_Show(request):
-    return render(request, "OneFile/GiaiThuatCoDien_Show.html")
-
-
-
-# one file
-def One_GiaiThuatCoDien(request):
-    return render(request, "OneFile/GiaiThuatCoDien.html")
-
-# co dien
+    global LoginCheck
+    if LoginCheck == True:
+        return render(request, "OneFile/GiaiThuatCoDien_Show.html")
+    else:
+        return render(request, 'Login.html')
+    
+    
 
 
 def One_GiaiThuatCoDien_POST(request):
@@ -320,9 +345,9 @@ def One_GiaiThuatCoDien_POST(request):
             arr_out_ACC, arr_out_Precision, arr_out_Recall, arr_out_F1 = [], [], [], []
             for i in np.arange(1, int(request.POST['inputFor'])+1, 1):
                 arr0, arr1, arr2, arr3 = Select_Model(request.COOKIES.get('id'),
-                    dataPhu, number_k, FILECSV, path, batch, age, select)
+                                                      dataPhu, number_k, FILECSV, path, batch, age, select)
 
-                arr0.insert(0, 'Accuracy Score lần chạy '+str(i))
+                arr0.insert(0, 'Balance Accuracy Score lần chạy '+str(i))
                 arr1.insert(0, 'Precision lần chạy '+str(i))
                 arr2.insert(0, 'Recall lần chạy '+str(i))
                 arr3.insert(0, 'F1 lần chạy '+str(i))
@@ -337,14 +362,8 @@ def One_GiaiThuatCoDien_POST(request):
     else:
         return redirect('test')
 
-# Two file
-
-
-
-# Chuan doan
 
 def ChuanDoanUploadFIle(request, FileCSV, FileModel, ListClassOut):
-
     ArrOUT = []
     ArrOUTKQ = ['Out Lable']
     with open(FileCSV, 'r', encoding="utf-8") as csvfile:
@@ -398,18 +417,9 @@ def ChuanDoanUploadFIle(request, FileCSV, FileModel, ListClassOut):
 
 def ChuanDoan(request):
     if request.method == 'POST':
-        # upload file len
-        # input-file
-        # myfile = request.FILES['input-file']
-        # fs = FileSystemStorage(
-        #     settings.MEDIA_ROOT+'/media/' + request.COOKIES.get('id')+'/tmp/UpModel/')
-        # filename = fs.save(myfile.name, myfile)
-        
-        # settings.MEDIA_ROOT +
-        #                         '/media/'+request.COOKIES.get('id')+'/FileLoadModel/
-                                
         FileModel = settings.MEDIA_ROOT+'/media/' + \
-            request.COOKIES.get('id')+'/FileLoadModel/' +  request.POST['FileMOdel']
+            request.COOKIES.get('id')+'/FileLoadModel/' + \
+            request.POST['FileMOdel']
 
         # select mo hinh du doan
         select = request.POST['select']
@@ -453,4 +463,3 @@ def ChuanDoan(request):
             out = f"Kết quả: {getClassName}. Độ chính xác {outPhanTram*100} %"
 
             return render(request, 'home/home.html', {'ketqua': out})
-

@@ -9,7 +9,7 @@ admin.autodiscover()
 
 
 
-# To add a new path, first import the mOC_iSVM:
+# To add a new path, first import the CodeThucTap:
 # import blog
 #
 # Then add the new path:
@@ -18,7 +18,7 @@ admin.autodiscover()
 # Learn more here: https://docs.djangoproject.com/en/2.1/topics/http/urls/
 
 urlpatterns = [
-    path("", include('mOC_iSVM.urls')),
+    path("", include('CodeThucTap.urls')),
     path('admin/', admin.site.urls),
 
 

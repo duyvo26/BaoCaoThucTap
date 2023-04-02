@@ -1,0 +1,97 @@
+<title>Login</title>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script>
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+</script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex align-items-center justify-content-center h-100">
+      <div class="col-md-8 col-lg-7 col-xl-6">
+        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
+          class="img-fluid" alt="Phone image">
+      </div>
+      <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+        <form id="FLOgin" method="POST">
+          <!-- Email input -->
+          <div class="form-outline mb-4">
+            <input type="email" name='email'   id="form1Example13" class="form-control form-control-lg" />
+            <label class="form-label" for="form1Example13">Email address</label>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-4">
+            <input type="password" name='password'   id="form1Example23" class="form-control form-control-lg" />
+            <label class="form-label" for="form1Example23">Password</label>
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Sign in</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+    $("#FLOgin").submit(function(e) {
+         e.preventDefault(); // cancel click
+         var form_data = new FormData(document.getElementById("FLOgin"));
+         $.ajax({
+         url: "{% url 'Login_POST' %}",
+         type:'POST',   
+         data: form_data,
+         processData: false,
+         contentType: false,
+         success: function(data) {
+            console.log(data);
+            if(data.id != 'null'){
+                setCookie("id", data.id, 10);
+                alert(data.thongbao);
+                setCookie('login', '4b83eccc1e1a5a9d9eb8ace38bb82f4b');
+                window.location.href = '/'
+            }else{
+                alert(data.thongbao); 
+            }
+         },
+         error: function(data)
+         {
+            alert('Có lỗi xảy ra vui lòng thử lại !'); 
+           console.log(data);
+         }
+         }); 
+         });
+
+</script>
+
+
+<style>
+    .divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+</style>

@@ -30,16 +30,13 @@ from datetime import datetime
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder
 import pickle
-from mOC_iSVM.static.ChucNang import get_random_string, AddModelSql
+from CodeThucTap.static.ChucNang import get_random_string, AddModelSql
 
 path_stock = os.path.dirname(os.path.abspath("hello"))+os.sep
 
 
 def check_miss_data(X):
     df = pd.DataFrame(X)
-    # try:
-    #     return ('?' in df.values) | (np.nan in df.values)
-    # except:
     ListData = list(df.values)
     for i in ListData:
         for a in i:
@@ -92,11 +89,7 @@ def Train_batch(batch, path_stock):
                 path_stock+f"/tmp/{i+1}.csv", "w") as f:
             f.writelines(arr[i])
     return batch
-  # chia thành 10
-# n = 20
-# bước nhảy k=
-# k = 3
-
+  
 
 def Select_Model(idUser, dataIn, test_size_, path_open, path_save, n=20, k=3, ChooseModel="AdaBoostClassifier"):
     if (ChooseModel != all):
@@ -143,58 +136,56 @@ def Select_Model(idUser, dataIn, test_size_, path_open, path_save, n=20, k=3, Ch
     list_accuracy_score_bieuDo, list_precision_score_bieuDO, list_recall_score_bieuDO, list_f1_score_bieuDO = [], [], [], []
 
     TrainXY = []
+    import time
+    TimeSave = 0
+    TimeEnd = 0
+    ThoiGianOn = time.time()
 
     for index in range(n):
-        print("begin", begin, "end", end)
+
+        TimeEnd = TimeSave * n
+        TimeOn = TimeSave * index
+        TimeOut = TimeEnd - TimeOn
+
+        GiayLoad = int(time.time() - ThoiGianOn)
+        print("############################################################################################")
+        print(f"-------------Thoi gian chay {GiayLoad} giay------------- ")
+        PhutLoad = int(GiayLoad / 60)
+        print(f"-------------Thoi gian chay {PhutLoad} phut------------- ")
+
+        print(
+            f"------------- Thoi gian du kien 1 lan chay: {int(TimeOut)} giay------------- ")
+        phut = int(int(TimeOut) / 60)
+        print(
+            f"------------- Thoi gian du kien 1 lan chay: {phut} phut------------- ")
+        gio = int(phut / 60)
+        print(
+            f"------------- Thoi gian du kien 1 lan chay: {gio} gio------------- ")
+
+        Batdau = time.time()
+
+        print(f'------------- Da chay {begin}/{end} -----------------------')
+
         trainx = x_train[begin:end]
         trainy = y_train[begin:end]
-        
+
         TrainXY.append([trainx, trainy])
         
-        
-        print('****-------------------------------------------------------------*****')
-
-        print("batch", index)
         if index > 0 and index - k >= 0:
-            print("len X real", len(trainx))
-            
+
             for i in range(index-k, index):
-                print('add batch', i)
-                # trainx = pd.concat([trainx, TrainXY[i][0]])
-                # trainy = pd.concat([trainy, TrainXY[i][1]])
+              
                 trainx = np.concatenate((trainx, TrainXY[i][0]))
                 trainy = np.concatenate((trainy, TrainXY[i][1]))
-                # trainx += TrainXY[i][0]
-                # trainy += TrainXY[i][1]
-                print('*********')
-                print("len X add", len(trainx))
-                print('*********')
-            print('*********')
+     
         if index > 0 and index - k < 0:
-            print('*********')
-            # print(TrainXY[index])
-            print('*********')
-            print("len X real", len(trainx))
-            print('*********')
+
             for i in range(0, index):
-                print('add batch', i)
+              #  print('add batch', i)
                 trainx = np.concatenate((trainx, TrainXY[i][0]))
                 trainy = np.concatenate((trainy, TrainXY[i][1]))
-                # trainx += TrainXY[i][0]
-                # trainy += TrainXY[i][1]
-                print('*********')
-                print("len X add", len(trainx))
-                print('*********')
-            print('*********')
 
-        print("len X SUM", len(trainx))
-
-        
-        print("LEN X", len(trainx))
         Model.fit(trainx, trainy)
-        print("train model batch", index, n)
-
-        print('****-------------------------------------------------------------*****')
 
         if (index == n-1):
             # save the model to disk
@@ -204,19 +195,14 @@ def Select_Model(idUser, dataIn, test_size_, path_open, path_save, n=20, k=3, Ch
                 os.makedirs(path_save+'/DowModels/')
             except:
                 print("")
-                
-                
 
-            filename = get_random_string(8)+'.sav'  
-            path = path_save+'/DowModels/'+ filename
-            
-            
+            filename = get_random_string(8)+'.sav'
+            path = path_save+'/DowModels/' + filename
+
             pickle.dump(Model, open(path, 'wb'))
             AddModelSql(idUser, ChooseModel,
-                                 filename, path, str(dt_string))
-            
-            
-            
+                        filename, path, str(dt_string))
+
         y_pred = Model.predict(x_test)
         list_label_real, out_label = y_pred, y_test
         acc = balanced_accuracy_score(list_label_real, out_label)
@@ -239,8 +225,19 @@ def Select_Model(idUser, dataIn, test_size_, path_open, path_save, n=20, k=3, Ch
         begin += int(len(x_train) / n)
         end += int(len(x_train) / n)
 
-    # shutil.rmtree(path_save_parent)
-    # shutil.rmtree(path_save+'/bieudo')
-    # return arr_nu, arr_gamma, arr, x_ve
-    return list_accuracy_score_bieuDo, list_precision_score_bieuDO, list_recall_score_bieuDO, list_f1_score_bieuDO
+        KetThuc = time.time()
 
+        TimeSave = KetThuc - Batdau
+
+        print(
+            f"-------------  Thoi gian chay 1 lan hien tai la:{KetThuc - Batdau} ----------------")
+
+
+    txtOut = '#'*100
+    print(txtOut)
+    print(txtOut)
+    print('################### Da xong 1 lan chay #####################')
+    print(txtOut)
+    print(txtOut)
+
+    return list_accuracy_score_bieuDo, list_precision_score_bieuDO, list_recall_score_bieuDO, list_f1_score_bieuDO

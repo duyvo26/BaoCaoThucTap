@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "mOC_iSVM",
+    "CodeThucTap",
 ]
 
 MIDDLEWARE = [
@@ -129,15 +129,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-# STATIC_ROOT = os.path.join(BASE_DIR, "/mOC_iSVM/static/data/")
+# STATIC_ROOT = os.path.join(BASE_DIR, "/CodeThucTap/static/data/")
 # STATIC_URL = "/static/"
 # MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'mOC_iSVM/static/')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'CodeThucTap/static/')
 
-STATIC_ROOT = os.path.join(BASE_DIR, "mOC_iSVM/static/data/")
+STATIC_ROOT = os.path.join(BASE_DIR, "CodeThucTap/static/data/")
 STATIC_URL = "/static/"
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'mOC_iSVM/static/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'CodeThucTap/static/')
 
 # django_heroku.settings(locals())
 X_FRAME_OPTIONS = 'ALLOWALL'

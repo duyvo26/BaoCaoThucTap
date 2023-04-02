@@ -18,14 +18,14 @@
       <script>
          document.getElementById("FileMOdel").value = getCookie("fileModel");
       </script>
-      <hr>
+    
       <h5 hidden>Loại Chuẩn đoán</h5>
       <select hidden required class="custom-select" name="selectChuanDoan" id="selectChuanDoan">
          <option value="Input" select>Nhập input</option>
          <option value="UpCSV" style='display: none' id="loadAdmin_1">Upload File</option>
          <option value="Chuoi" style='display: none' id="loadAdmin_2">Nhập chuỗi input</option>
       </select>
-      <hr>
+    
       <h5 hidden>Chọn mô hình dự đoán</h5>
       <select hidden required onchange="SetDataIn(this.options[this.selectedIndex].value)" class="custom-select" name="select" id="SelectMod">
          <option style="display: none;" id='GaussianNB' value="CoDien">Naive Bayes(GaussianNB)</option>
