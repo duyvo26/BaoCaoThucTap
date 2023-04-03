@@ -211,8 +211,11 @@ def index(request):
 
 def load(request):
     global LoginCheck
-    if len(request.COOKIES.get('login')) > 10:
-        LoginCheck = True
+    try:
+        if len(request.COOKIES.get('login')) > 10:
+            LoginCheck = True
+    except:
+        print('')
     return render(request, 'load.html')
 
 
