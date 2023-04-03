@@ -55,14 +55,19 @@ def Login_POST(request):
 @csrf_exempt        
 def CheckLogin(request):
     global LoginCheck
-    if len(request.COOKIES.get('login')) > 10:
-        LoginCheck = True
-        return True
-    if request.COOKIES.get('id') == '' or request.COOKIES.get('id') == None:
+    try:
+        if len(request.COOKIES.get('login')) > 10:
+            LoginCheck = True
+            return True
+        if request.COOKIES.get('id') == '' or request.COOKIES.get('id') == None:
+            return render(request, 'Login.html')
+        else:
+            LoginCheck = True
+            return True
+    except:
         return render(request, 'Login.html')
-    else:
-        LoginCheck = True
-        return True
+    
+
         
         
 def get_random_string(length):
