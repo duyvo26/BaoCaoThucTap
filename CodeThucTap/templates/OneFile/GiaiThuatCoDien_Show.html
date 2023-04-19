@@ -11,7 +11,8 @@
    </div> -->
 <!-- form -->
 <div class="container-fluid bg-2" >
-   <form class="was-validated " method="post" action="{% url 'One_GiaiThuatCoDien_POST' %}" enctype="multipart/form-data">
+        <div class=" container ">
+   <form class="was-validated " method="post" action="{% url 'GiaiThuatCoDien_POST' %}" enctype="multipart/form-data">
       {% csrf_token %}
       <label for="select">Các giải thuật cổ điển</label></br>
       <select onchange="SetDataIn(this.options[this.selectedIndex].value)" class="custom-select" name="select" id="SelectMod">
@@ -44,11 +45,12 @@
       </div>
       <div  class="p-0 col-12 my-3 d-flex flex-row justify-content-between">
          <div   class="input-group col-5 p-0 ">
-            <input type="number" class="form-control"  max="0.9" min="0.1" step="0.1" accept="Test size" value="0.3"
-               name="number-k" id="input-k">
-            <div class="input-group-prepend">
+          <div class="input-group-prepend">
                <span class="input-group-text bg-dark text-white">Test Size (0.1 - 0.9)</span>
             </div>
+            <input type="number" class="form-control"  max="0.9" min="0.1" step="0.1" accept="Test size" value="0.3"
+               name="number-k" id="input-k">
+            
          </div>
          
          <div  class="input-group col-5 p-0 ">

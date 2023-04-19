@@ -6,40 +6,40 @@
 {% endif %}
 <!-- First Container -->
 <div class="container-fluid bg-2 " onload="generateInputs()">
+    <div class=" container ">
    <a class="d-flex justify-content-end"  href="{% url 'setting' %}">
    <button class="input-group-text bg-dark text-white" style="display: none" id="CaiDat" style="submit">Cài đặt</button>
    </a>
    <form class="was-validated " method="post" action="{% url 'ChuanDoanPost' %}"  enctype="multipart/form-data" >
-      <h2 class="col-12 text-center" id="TieuDeDoan"></h2>
+      <h1 class="text-warning text-center"><span><b id="TieuDeDoan"></b></span></h1>
+
+
       {% csrf_token %}
       <input id='S_input' hidden name='S_input' >
       <input id='ListNameClass' hidden name='ListNameClass' >
       <input id='FileMOdel' hidden name='FileMOdel' >
+      <input id='FileMOdelSVM' hidden name='FileMOdelSVM' >
       <script>
          document.getElementById("FileMOdel").value = getCookie("fileModel");
+         document.getElementById("FileMOdelSVM").value = getCookie('fileModelSVM');
       </script>
+
+      <h5>Chọn mô hình dự đoán</h5>
+      <select required onchange="SetDataIn(this.options[this.selectedIndex].value)" class="custom-select" name="select" id="SelectMod">
+         <option value="CoDien">Cổ điển</option>
+         <option value="iSVM">mOC - iSVM</option>
+      </select>
+
+
     
-      <h5 hidden>Loại Chuẩn đoán</h5>
-      <select hidden required class="custom-select" name="selectChuanDoan" id="selectChuanDoan">
+      <h5>Loại Chuẩn đoán</h5>
+      <select required class="custom-select" name="selectChuanDoan" id="selectChuanDoan">
          <option value="Input" select>Nhập input</option>
-         <option value="UpCSV" style='display: none' id="loadAdmin_1">Upload File</option>
-         <option value="Chuoi" style='display: none' id="loadAdmin_2">Nhập chuỗi input</option>
+         <option value="UpCSV">Upload File</option>
+         <option value="Chuoi">Nhập chuỗi input</option>
       </select>
     
-      <h5 hidden>Chọn mô hình dự đoán</h5>
-      <select hidden required onchange="SetDataIn(this.options[this.selectedIndex].value)" class="custom-select" name="select" id="SelectMod">
-         <option style="display: none;" id='GaussianNB' value="CoDien">Naive Bayes(GaussianNB)</option>
-         <option  style="display: none;"  id='DecisionTreeClassifier' value="CoDien">Decision Tree</option>
-         <option  style="display: none;"  id='KNeighborsClassifier' value="CoDien">K-Nearest Neighbors</option>
-         <option   style="display: none;"  id='BernoulliNB' value="CoDien">BernoulliNB</option>
-         <option  style="display: none;"  id='ExtraTreeClassifier' value="CoDien">ExtraTreeClassifier</option>
-         <option  style="display: none;"  id='BaggingClassifier' value="CoDien">Bagging classifier</option>
-         <option  style="display: none;"  id='AdaBoostClassifier' value="CoDien">AdaBoost Classifier</option>
-         <option  style="display: none;"  id='MLPClassifier' value="CoDien">MLPClassifier</option>
-         <option  style="display: none;"  id='LinearDiscriminantAnalysis' value="CoDien">Linear Discriminant Analysis</option>
-         <option  style="display: none;"  id='RandomForestClassifier' value="CoDien">RandomForestClassifier</option>
-      </select>
-      <hr>
+
       <div id="UploadFile" style="display: none;">
          <h5>Tải lên file Test</h5>
          <div class="custom-file mb-3"  >
@@ -93,6 +93,31 @@
           
       }
       
+
+         // Lấy đối tượng select
+         var select = document.getElementById("selectChuanDoan");
+      
+         // Bắt sự kiện khi giá trị của select box thay đổi
+         select.addEventListener("change", function() {
+         // Lấy giá trị của option được chọn
+         var selectedValue = select.value;
+         
+            document.getElementById("UploadFile").style.display = 'none';
+            document.getElementById("inputL").style.display = 'none';
+            document.getElementById("inputF").style.display = 'none';
+      
+         console.log(selectedValue);
+         if(selectedValue == "UpCSV"){
+            document.getElementById("UploadFile").style.display = 'block';
+         }
+         if(selectedValue == "Chuoi"){
+            document.getElementById("inputL").style.display = 'block';
+         }
+         if(selectedValue == "Input"){
+            document.getElementById("inputF").style.display = 'block';
+         }
+      
+         });
       
       
       
@@ -165,17 +190,26 @@
             for (var i = 0; i < n; i++) {
             var inputGroup = document.createElement("div");
             inputGroup.className = "col-3 md-3";
+
+            var ListNameThamSO = getCookie('ListNameThamSO').split(",");
             var input = document.createElement("input");
+            var divs = document.createElement("div");
+
+
+            divs.innerText = ListNameThamSO[i];
+
             input.type = "text";
+            input.value = "0";
             //input.required = "required";
             input.name = "input" + i;
             input.className = "form-control";
             // get name da luu
-            var ListNameThamSO = getCookie('ListNameThamSO').split(",");;
+            
             console.log(ListNameThamSO);
             input.placeholder = ListNameThamSO[i];
         
         
+            inputGroup.appendChild(divs);
             inputGroup.appendChild(input);
             inputContainer.appendChild(inputGroup);
             }

@@ -8,6 +8,7 @@
 
 <!-- First Container -->
 <div class="container-fluid bg-2 text-center">
+      <div class=" container ">
   <form hidden id='fNameFile' method="post" action="{% url 'DowMOdel' %}">
    {% csrf_token %}
  <input name='NameFile' id='NameFile'>
@@ -20,7 +21,7 @@
     document.getElementById("fNameFile").submit();
   }
 </script>
-<table class="table" style="color: white"> 
+<table class="table " > 
   <tr>
     <th>ID</th>
     <th>Name Model</th>

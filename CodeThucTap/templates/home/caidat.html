@@ -5,36 +5,33 @@
 <h1>{{uploaded_file_url}}</h1>
 {% endif %}
 <div class="container-fluid bg-2">
+       <div class=" container ">
    <!-- begin -->
    <h2 class="col-12 text-center">Cấu hình dự đoán</h2>
    <!-- ten tham so -->
    <div>
       <form  id="UplaodMOdel" enctype="multipart/form-data">
          {% csrf_token %}
-         <h5 >File mô hình dự đoán</h5>
+         <h5 >File mô hình dự đoán cổ điển</h5>
          <div class="custom-file mb-3">
             <input  type="file" class="custom-file-input" id="input-file" accept=".sav" name="input-file">
             <label class="custom-file-label" for="input-file" id="lable-input-file-cut">File .sav Model</label>
          </div>
-      <h5 >Chọn mô hình dự đoán</h5>
-      <select required onchange="SetDataIn(this.options[this.selectedIndex].value)" class="custom-select" name="select" id="SelectMod">
-         <option style="display: none;" id='GaussianNB' value="CoDien">Naive Bayes(GaussianNB)</option>
-         <option  style="display: none;"  id='DecisionTreeClassifier' value="CoDien">Decision Tree</option>
-         <option  style="display: none;"  id='KNeighborsClassifier' value="CoDien">K-Nearest Neighbors</option>
-         <option   style="display: none;"  id='BernoulliNB' value="CoDien">BernoulliNB</option>
-         <option  style="display: none;"  id='ExtraTreeClassifier' value="CoDien">ExtraTreeClassifier</option>
-         <option  style="display: none;"  id='BaggingClassifier' value="CoDien">Bagging classifier</option>
-         <option  style="display: none;"  id='AdaBoostClassifier' value="CoDien">AdaBoost Classifier</option>
-         <option  style="display: none;"  id='MLPClassifier' value="CoDien">MLPClassifier</option>
-         <option  style="display: none;"  id='LinearDiscriminantAnalysis' value="CoDien">Linear Discriminant Analysis</option>
-         <option  style="display: none;"  id='RandomForestClassifier' value="CoDien">RandomForestClassifier</option>
-      </select>
+ 
 
-         <hr>
+         <h5 >File mô hình dự đoán iSVM</h5>
+         <div class="custom-file mb-3">
+            <input  type="file" class="custom-file-input" id="input-file" accept=".zip" name="fileModelSVM">
+            <label class="custom-file-label" for="input-file" id="lable-input-file-cut">File .zip Model</label>
+         </div>
+ 
          <input  class="btn btn-lg btn-block btn-danger" type="submit" value='Tải lên'>
+
+         
       </form>
-      <div style="margin-top: 10px;" class="alert alert-danger" >FileName:&nbsp;<span id="nameFile">Null</span></div>
-      <div hidden style="margin-top: 10px;" class="alert alert-danger" >File ảnh nền :&nbsp;<span id="fileAnh">Null</span></div>
+      <div style="margin-top: 10px;" class="alert alert-danger" >FileName Cổ điển:&nbsp;<span id="nameFile">Null</span></div>
+      <div style="margin-top: 10px;" class="alert alert-danger" >FileName iSVM:&nbsp;<span id="nameFileSVM">Null</span></div>
+   
       <script>
           $("#input-anhNen").on("change", function () {
          var fileName = $(this).val().split("\\").pop();
@@ -52,8 +49,8 @@
          
          
          if(getCookie('fileModel') != 'null'){
-         document.getElementById("nameFile").innerHTML = getCookie('fileModel');
-         document.getElementById("fileAnh").innerHTML = getCookie('fileAnh');
+            document.getElementById("nameFile").innerHTML = getCookie('fileModel');
+            document.getElementById("nameFileSVM").innerHTML = getCookie('fileModelSVM');
          }
          $("#UplaodMOdel").submit(function(e) {
          e.preventDefault(); // cancel click
@@ -65,13 +62,10 @@
          processData: false,
          contentType: false,
          success: function(data) {
-            if(data.myfile != ''){
-                  setCookie("fileModel", data.myfile, 365);
-                  document.getElementById("nameFile").innerHTML = data.myfile;
-            }
+
             if(data.fileAnh != ''){
                   setCookie("fileAnh", data.fileAnh, 365);
-           document.getElementById("fileAnh").innerHTML = data.fileAnh;   
+                  document.getElementById("fileAnh").innerHTML = data.fileAnh;   
 
             }
            

@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title %}Find Best Nu and Gamma{% endblock %}
+{% block content %}
+<!-- start form find best nu gamma file -->
+<div class="container-fluid bg-dark bg-1 ">
+      <div class="text-center container ">
+         <form  action="{% url 'FindNuGamma_POST' %}" method="post"
+            enctype="multipart/form-data">
+     
+            {% csrf_token %}
+            <h1 class="text-warning text-center mb-3"><span><b>Find Best Nu and Gamma</b></span></h1>
+            <div class="custom-file">
+               <input type="file" class="custom-file-input" id="customFile-best" name="file-csv-open" accept=".csv">
+               <label class="custom-file-label label-browser" for="customFile" name='label-browser'>Select the file with .csv
+               extension</label>
+            </div>
+            <div>
+               <h4>Nu <span style="font-size: 0.55em;">(Nu phải nhỏ hơn 1 và lớn hơn 0)</span></h4>
+               <div class="col-12 d-flex p-0">
+                  <div class="input-group mb-3 col-4 d-flex flex-row">
+                     <input type="text" class="form-control m-0" onchange="check_nu()" placeholder="1" value="0.005" 
+                        max=1 step="0.005" name="input-nu-start">
+                     <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">Start</span>
+                     </div>
+                  </div>
+                  <div class="input-group mb-3 col-4 d-flex flex-row">
+                     <input type="text" class="form-control m-0 " onchange="check_nu()" placeholder="1" value="1" min="0"
+                        max=1 step="0.005" name="input-nu-end">
+                     <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">End</span>
+                     </div>
+                  </div>
+                  <div class="input-group mb-3 col-4 d-flex flex-row">
+                     <input type="text" class="form-control m-0 " onchange="check_nu()" placeholder="1" value="0.005" min="0.000000000001"
+                        max="1" step="0.005" name="input-nu-step">
+                     <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">Step</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div>
+               <h4>Gamma <span style="font-size: 0.55em;">(Gamma phải lớn hơn hoặc bằng 0)</span></h4>
+               <div class="col-12 d-flex p-0">
+                  <div class="input-group mb-3 col-4 d-flex flex-row">
+                     <input type="text" class="form-control m-0" placeholder="1" value="0" min="0" step="1"
+                        name="input-gamma-start" onchange="check_gamma()">
+                     <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">Start</span>
+                     </div>
+                  </div>
+                  <div class="input-group mb-3 col-4 d-flex flex-row">
+                     <input type="text" class="form-control m-0 " placeholder="1" value="1" min="0" step="1"
+                        name="input-gamma-end" onchange="check_gamma()">
+                     <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">End</span>
+                     </div>
+                  </div>
+                  <div class="input-group mb-3 col-4 d-flex flex-row">
+                     <input type="text" class="form-control m-0 " placeholder="1" value="0.005" min="0" step="0.005"
+                        name="input-gamma-step" onchange="check_gamma()">
+                     <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">Step</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div>
+               <h4>Test size<span style="font-size: 0.55em;">&nbsp;(0.1 - 0.9)</span></h4>
+               <div class="col-12 d-flex p-0">
+                  <div class="input-group flex-row">
+                     <input  class="form-control m-0 " type="number" name="input-pTC" max="0.9" min="0.1" step="0.1" accept="Test size" value="0.3">
+                     <div class="input-group-append">
+                        <span class="input-group-text">Test Size </span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <button class="btn btn-warning text-white col-12 p-2" id="btn-find-bes-nu-gamma"><b>FIND</b></button>
+      </div>
+      </form>
+</div>
+</div>
+<!-- end svm -->
+<script>
+
+   
+   var nu_true = false;
+   var gamma_true = false;
+   var fileupload_true = false;
+   
+   
+   function check_nu() {
+     // if (parseFloat(document.querySelector('input[name=input-nu-start]').value) >= parseFloat(document.querySelector('input[name=input-nu-end]').value)) {
+     //   alert("Please check Number of Nu!")
+     //   nu_true = false
+     // }
+     // else {
+       nu_true = true
+     // }
+   }
+   function check_gamma() {
+     // if (parseFloat(document.querySelector('input[name=input-gamma-start]').value) > parseFloat(document.querySelector('input[name=input-gamma-end]').value) | parseFloat(document.querySelector('input[name=input-gamma-step]').value) > parseFloat(document.querySelector('input[name=input-gamma-end]').value)) {
+     //   alert("Please check Number of Gamma!")
+     //   gamma_true = false
+     // }
+     // else {
+       gamma_true = true
+     // }
+   }
+
+   $("#file-csv").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+       if ($(this).val().includes('csv') == true) {
+         file_train_chang = true;
+     }
+     else{
+       alert("Please select a file extension .csv");
+               file_train_chang = false;
+   
+     }
+   });
+   
+   var checkcut=false;
+   function check_cut(){
+     ipt_cut=document.getElementById('input-cut-frmcut');
+     if(parseFloat(ipt_cut.value)>=1 & parseFloat(ipt_cut.value)<=9){
+       checkcut=true;
+     }
+     else{
+       alert("Please enter a number between 1 and 9");
+       checkcut=false;
+     }
+   }
+   
+   $("#input-file-cut").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+     if ($(this).val().includes('.csv') == true) {
+       filecutchang = true;
+     }
+     else {
+           filecutchang  = false;
+   
+       alert("Please select a file extension .csv");
+     }
+   });
+   $("#customFile-draw").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+   });
+   var check_file_form_train=false;
+   $("#customFile-best").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+     if($(this).val().includes(".csv")) {
+       check_file_form_train=true;
+     }
+     else{
+       alert("Please enter selected file extension .csv");
+       check_file_form_train=false;
+     }
+   });
+   var file_data_chang=false;
+   $("#customFile").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        if ($(this).val().includes('csv') == true) {
+       file_data_chang = true;
+     }
+     else {
+             file_data_chang = false;
+   
+       alert("Please select a file extension .csv");
+     }
+   });
+   
+   {% if bestnugamma %}
+   alert("{{bestnugamma}}")
+   {% endif %}
+</script>
+{% endblock %}

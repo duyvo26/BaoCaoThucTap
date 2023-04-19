@@ -10,11 +10,12 @@ import os
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from CodeThucTap.static.CodeCoDien import Select_Model
-from CodeThucTap.static.ChucNang import ChuanDoanCoDien
+from CodeThucTap.static.ChucNang import ChuanDoanCoDien, ChuanDoanISVM, UpdateDataCauHinh, GetDataCauHinh
 from matplotlib import pyplot as plt
 import csv
 import numpy as np
 import os
+import zipfile
 import sys
 from django.http import HttpResponse
 from django.http import JsonResponse
@@ -68,8 +69,25 @@ def CheckLogin(request):
         return render(request, 'Login.html')
     
 
-        
-        
+def LoadCookie(request):
+    data = {
+        'datas': GetDataCauHinh()
+    }
+    return JsonResponse(data)
+
+
+def load(request):
+    global LoginCheck
+    try:
+        if len(request.COOKIES.get('login')) > 10:
+            LoginCheck = True
+    except:
+        print('')    
+
+  
+    return render(request, 'load.html')
+
+
 def get_random_string(length):
     import random
     import string
@@ -209,14 +227,7 @@ def index(request):
 
 
 
-def load(request):
-    global LoginCheck
-    try:
-        if len(request.COOKIES.get('login')) > 10:
-            LoginCheck = True
-    except:
-        print('')
-    return render(request, 'load.html')
+
 
 
 def setting(request):
@@ -229,17 +240,57 @@ def caidat(request):
     return render(request, 'home/caidat.html', {'fontSize': fontSize})
 
 
+@csrf_exempt
+def settingStyle_POST(request):
+    if request.method == 'POST':
+        UpdateDataCauHinh(7, request.POST['font'])
+        UpdateDataCauHinh(6, request.POST['color'])
+        UpdateDataCauHinh(9, request.POST['Fsize'])
+        data = {
+            'thongbao': 'Tải lên thành công'
+        }
+        return JsonResponse(data)
+
+
+@csrf_exempt
+def settingModel_POST(request):
+    if request.method == 'POST':
+        UpdateDataCauHinh(8, request.POST['TieuDeDoan'])
+        UpdateDataCauHinh(4, request.POST['ListNameClass'])
+        UpdateDataCauHinh(2, request.POST['LengNameClass'])
+        UpdateDataCauHinh(5, request.POST['ListNameThamSO'])
+        UpdateDataCauHinh(3, request.POST['LengNameThamSo'])
+        data = {
+            'thongbao': 'Tải lên thành công'
+        }
+        return JsonResponse(data)
+
+@csrf_exempt
 def setting_POST(request):
     if request.method == 'POST':
         myfile, fileAnh = "", ''
         try:
             myfile = request.FILES['input-file']
-            fs = FileSystemStorage(settings.MEDIA_ROOT +
-                                   '/media/'+request.COOKIES.get('id')+'/FileLoadModel/')
+            fs = FileSystemStorage(settings.MEDIA_ROOT +'/model/FileLoadModel/')
             filename = fs.save(myfile.name, myfile)
             myfile = myfile.name
+            
+            UpdateDataCauHinh(1, myfile)
         except:
             myfile = ''
+
+        try:
+            myfile = request.FILES['fileModelSVM']
+            fs = FileSystemStorage(
+                settings.MEDIA_ROOT + '/model/FileLoadModel/')
+            filename = fs.save(myfile.name, myfile)
+            myfile = myfile.name
+
+            UpdateDataCauHinh(10, myfile)
+        except:
+            myfile = ''
+
+
 
         try:
             fileAnh = request.FILES['input-anhNen']
@@ -247,8 +298,13 @@ def setting_POST(request):
                                    '/images/FileLoadAnhNen/')
             filename = fs.save(fileAnh.name, fileAnh)
             fileAnh = fileAnh.name
+            
+            UpdateDataCauHinh(0, fileAnh)
         except:
             fileAnh = ''
+
+
+
 
         from django.http import JsonResponse
         data = {
@@ -309,7 +365,7 @@ def GiaiThuatCoDien_Show(request):
     
 
 
-def One_GiaiThuatCoDien_POST(request):
+def GiaiThuatCoDien_POST(request):
     if request.method == 'POST':
         myfile = request.FILES['file-csv-open']
         fs = FileSystemStorage(settings.MEDIA_ROOT +
@@ -423,51 +479,82 @@ def ChuanDoanUploadFIle(request, FileCSV, FileModel, ListClassOut):
     return download(request, path)
 
 
+
 def ChuanDoan(request):
-    if request.method == 'POST':
-        FileModel = settings.MEDIA_ROOT+'/media/' + \
-            request.COOKIES.get('id')+'/FileLoadModel/' + \
-            request.POST['FileMOdel']
+    try:
+        if request.method == 'POST':
+            # upload file len
+            # input-file
+            
+            FileModel = settings.MEDIA_ROOT + '/model/FileLoadModel/'+request.POST['FileMOdel']
+            # select mo hinh du doan
+            select = request.POST['select']
+            print('------------',select)
+            if select == 'CoDien':
+                textIn = []
+                print("---------------------------")
+                if request.POST['selectChuanDoan'] == 'UpCSV':
+                    myfile = request.FILES['input-fileCSV']
+                    fs = FileSystemStorage(
+                        settings.MEDIA_ROOT+'/media/' + request.COOKIES.get('id')+'/tmp/UpModel/')
+                    filename = fs.save(myfile.name, myfile)
+                    FileCSV = settings.MEDIA_ROOT+'/media/' + \
+                        request.COOKIES.get('id')+'/tmp/UpModel/' + myfile.name
 
-        # select mo hinh du doan
-        select = request.POST['select']
-        if select == 'CoDien':
-            textIn = []
-            print("---------------------------")
-            if request.POST['selectChuanDoan'] == 'UpCSV':
-                myfile = request.FILES['input-fileCSV']
-                fs = FileSystemStorage(
-                    settings.MEDIA_ROOT+'/media/' + request.COOKIES.get('id')+'/tmp/UpModel/')
-                filename = fs.save(myfile.name, myfile)
-                FileCSV = settings.MEDIA_ROOT+'/media/' + \
-                    request.COOKIES.get('id')+'/tmp/UpModel/' + myfile.name
+                    return ChuanDoanUploadFIle(request, FileCSV, FileModel, request.POST['ListNameClass'].split(','))
+                if request.POST['selectChuanDoan'] == 'Chuoi':
+                    # chuoi text
+                    for i in request.POST['inputSum'].split(','):
+                        textIn.append(float(i))
+                if request.POST['selectChuanDoan'] == 'Input':
+                    # nhap tung o
+                    for i in range(0, int(request.POST['S_input'])):
+                        thamSO = str(request.POST[f'input{i}']).replace(" ", '')
+                        textIn.append(float(thamSO))
 
-                return ChuanDoanUploadFIle(request, FileCSV, FileModel, request.POST['ListNameClass'].split(','))
-            if request.POST['selectChuanDoan'] == 'Chuoi':
-                # chuoi text
-                for i in request.POST['inputSum'].split(','):
-                    textIn.append(float(i))
-            if request.POST['selectChuanDoan'] == 'Input':
-                # nhap tung o
+                outClass = 0
+                try:
+                    outClass, outPhanTram = ChuanDoanCoDien(FileModel, textIn)
+                except Exception as es:
+                    print(es)
+                    return render(request, 'home/home.html', {'ketqua': "Có lỗi vui lòng thử lại !!!"})
+
+                print("ChuanDoanCoDien-----------------------------------------", outClass)
+
+                try:
+                    getClassName = request.POST['ListNameClass'].split(',')[
+                        outClass[0]]
+                except:
+                    getClassName = f"Không tìm thấy tên Class, Class mặt định là: {outClass[0]}"
+
+                out = f"Kết quả: {getClassName}. Độ chính xác {outPhanTram*100} %"
+
+                return render(request, 'home/home.html', {'ketqua': out})
+            else:
+          
+                FileModel = settings.MEDIA_ROOT + '/model/FileLoadModel/'+request.POST['FileMOdelSVM']
+
+                folEX = settings.MEDIA_ROOT+'/media/' + \
+                    request.COOKIES.get('id')+'/tmp/UpModel/' + get_random_string(12)
+                    
+                with zipfile.ZipFile(FileModel, 'r') as zip_ref:
+                    zip_ref.extractall(folEX)
+
+                textIn = ""
                 for i in range(0, int(request.POST['S_input'])):
                     thamSO = str(request.POST[f'input{i}']).replace(" ", '')
-                    textIn.append(float(thamSO))
+                    textIn += f"{i}:{thamSO} "
+                print(textIn)
 
-            outClass = 0
-            try:
-                outClass, outPhanTram = ChuanDoanCoDien(FileModel, textIn)
-            except Exception as es:
-                print(es)
-                return render(request, 'home/home.html', {'ketqua': "Có lỗi vui lòng thử lại !!!"})
+                try:
+                    ketqua = ChuanDoanISVM(settings.MEDIA_ROOT, folEX, textIn)
+                except:
+                    return render(request, 'home/home.html', {'ketqua': "Có lỗi vui lòng thử lại !!!"})
 
-            print("ChuanDoanCoDien-----------------------------------------", outClass)
-
-            try:
+                print("ChuanDoanISVM-----------------------------------------------", ketqua)
                 getClassName = request.POST['ListNameClass'].split(',')[
-                    outClass[0]]
-            except:
-                getClassName = f"Không tìm thấy tên Class, Class mặt định là: {outClass[0]}"
-
-            out = f"Kết quả: {getClassName}. Độ chính xác {outPhanTram*100} %"
-
-            return render(request, 'home/home.html', {'ketqua': out})
+                    int(ketqua)]
+                out = f"Kết quả: {getClassName}"
+                return render(request, 'home/home.html', {'ketqua': out})
+    except:
+        return render(request, 'home/home.html', {'ketqua': "Có lỗi vui lòng thử lại !!!"})

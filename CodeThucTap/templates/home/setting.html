@@ -5,6 +5,7 @@
 <h1>{{uploaded_file_url}}</h1>
 {% endif %}
 <div class="container-fluid bg-2">
+   
    <!-- begin -->
    <h2 class="col-12 text-center">Cấu hình dự đoán</h2>
    <!-- ten tham so -->
@@ -13,8 +14,8 @@
          {% csrf_token %}
          <h5 >File mô hình dự đoán</h5>
          <div class="custom-file mb-3">
-            <input  type="file" class="custom-file-input" id="input-file" accept=".sav" name="input-file">
-            <label class="custom-file-label" for="input-file" id="lable-input-file-cut">File .sav Model</label>
+            <input  type="file" class="custom-file-input" id="input-file" accept=".sav, .zip" name="input-file">
+            <label class="custom-file-label" for="input-file" id="lable-input-file-cut">File .sav .zip Model</label>
          </div>
          <h5 >File Ảnh nền</h5>
          <div class="custom-file mb-3">
@@ -130,9 +131,27 @@
          setCookie("color", newColor, 365);
          setCookie("Fsize", Fsize, 365);
 
-         
-         alert("Lưu cài đặt thành công");
-         });
+      
+            $.ajax({
+               url: "{% url 'settingStyle_POST' %}",
+               type:'POST',   
+               data: {font:newFont, color:newColor, Fsize:Fsize},
+               success: function(data) {
+                  alert("Lưu cài đặt thành công");
+               },
+               error: function(data)
+                  {
+                     console.log(data);
+                  }
+               }); 
+
+
+            });
+
+
+
+           
+      
       </script>
       <hr>
       <h5 >Tiêu đề dự đoán</h5>
@@ -261,6 +280,21 @@
          setCookie('ListMoHinh', ListMoHinh, 365);
    
          console.log(ListNameThamSO, ListNameClass);
+
+            $.ajax({
+               url: "{% url 'settingModel_POST' %}",
+               type:'POST',   
+               data: {ListMoHinh:ListMoHinh, TieuDeDoan:TieuDeDoan, ListNameClass:ListNameClass.toString(), LengNameClass:LengNameClass, ListNameThamSO:ListNameThamSO.toString(), LengNameThamSo:LengNameThamSo},
+               success: function(data) {
+                  alert("Lưu cài đặt thành công");
+               },
+               error: function(data)
+                  {
+                     console.log(data);
+                  }
+               }); 
+
+
          alert("Các tham số được lưu thành công");
    
       

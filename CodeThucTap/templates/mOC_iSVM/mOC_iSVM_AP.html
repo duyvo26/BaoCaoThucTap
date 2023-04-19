@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}SVM IMOC AP{% endblock %}
+{% block content %}
+<div class="container-fluid bg-dark m-0 pb-5" >
+   <div class="text-center container ">
+      <form enctype="multipart/form-data" method="post"
+         action="{% url 'One_mOC_iSVM_AP_POST' %}">
+         {% csrf_token %}
+         <h1 class="text-warning text-center"><span><b>SVM IMOC AP</b></span></h1>
+         <div class="custom-file">
+            <input type="file" class="custom-file-input" id="file-csv" name="file-csv" accept=".csv">
+            <label class="custom-file-label label-browser" for="customFile" name='label-browser'>Select the file to
+            CSV</label>
+         </div>
+         <div class="p-0 col-12 my-3 d-flex flex-row justify-content-between">
+            <div class="input-group col-5 p-0 ">
+               <div class="input-group-prepend">
+                  <span class="input-group-text bg-dark text-white">BestNu</span>
+               </div>
+               <input type="text" class="form-control" value="0.05" name="number-best-nu" id="input-best-nu">
+            </div>
+            <div class="input-group col-3 p-0 ">
+               <input type="text" class="form-control" value="0.005" name="number-best-gamma"
+                  id="input-best-gamma">
+               <div class="input-group-prepend">
+                  <span class="input-group-text bg-dark text-white">BestGamma</span>
+               </div>
+            </div>
+            <div class="input-group col-3 p-0">
+               <div class="input-group-prepend">
+                  <span class="input-group-text bg-dark text-white">Test Size</span>
+               </div>
+               <input type="number" class="form-control" min="1" value="7" name="number-TrainTest" id="input-cut-frmcut" max="9" onchange="check_cut(this)">
+            </div>
+         </div>
+         <div class="p-0 col-12 my-3 d-flex flex-row justify-content-between">
+            <div class="input-group col-3 p-0 ">
+               <div class="input-group-prepend">
+                  <span class="input-group-text bg-dark text-white">Number of Age</span>
+               </div>
+               <input type="number" class="form-control" min="1" value="3" name="number-age" id="input-age">
+            </div>
+            <div class="input-group col-3 p-0 ">
+               <input type="number" class="form-control" min="1" value="10" name="number-Batch" id="input-cut">
+               <div class="input-group-prepend">
+                  <span class="input-group-text bg-dark text-white">Batch</span>
+               </div>
+            </div>
+            <div class="input-group col-3 p-0 ">
+               <input type="number" class="form-control" max="100" min="1" step="1"  value="1"
+                  name="inputFor" id="inputFor">
+               <div class="input-group-prepend">
+                  <span class="input-group-text bg-dark text-white">Number For</span>
+               </div>
+            </div>
+         </div>
+         <button class="btn btn-warning text-white col-12 p-2" id="btn-draw"
+            onclick="check_draw(this)"><b>DRAW</b></button>
+      </form>
+   </div>
+</div>
+<!-- end svm -->
+<script>
+   var nu_true = false;
+   var gamma_true = false;
+   var fileupload_true = false;
+   
+   document.querySelector('input[name=file-csv]').addEventListener('change', function () {
+     fileupload_true = true
+   })
+   
+   $("#file-csv").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+       if ($(this).val().includes('csv') == true) {
+         file_train_chang = true;
+     }
+     else{
+       alert("Please select a file extension .csv");
+               file_train_chang = false;
+   
+     }
+   });
+   
+   var checkcut=false;
+   function check_cut(){
+     ipt_cut=document.getElementById('input-cut-frmcut');
+     if(parseFloat(ipt_cut.value)>=1 & parseFloat(ipt_cut.value)<=9){
+       checkcut=true;
+     }
+     else{
+       alert("Please enter a number between 1 and 9");
+       checkcut=false;
+     }
+   }
+   
+   $("#input-file-cut").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+     if ($(this).val().includes('.csv') == true) {
+       filecutchang = true;
+     }
+     else {
+           filecutchang  = false;
+   
+       alert("Please select a file extension .csv");
+     }
+   });
+   $("#customFile-draw").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+   });
+   var check_file_form_train=false;
+   $("#customFile-best").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+     if($(this).val().includes(".data")) {
+       check_file_form_train=true;
+     }
+     else{
+       alert("Please enter selected file extension .data");
+       check_file_form_train=false;
+     }
+   });
+   var file_data_chang=false;
+   $("#customFile").on("change", function () {
+     var fileName = $(this).val().split("\\").pop();
+     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        if ($(this).val().includes('data') == true) {
+       file_data_chang = true;
+     }
+     else {
+             file_data_chang = false;
+   
+       alert("Please select a file extension .data");
+     }
+   });
+   
+</script>
+{% endblock %}

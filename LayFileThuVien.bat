@@ -1,0 +1,1 @@
+pipreqs --encoding=utf8 D:\GIT\Python\BaoCaoThucTap

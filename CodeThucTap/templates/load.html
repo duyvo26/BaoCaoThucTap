@@ -1,100 +1,147 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- load ajax -->
 <!-- tieu de -->
 <title>Title</title>
 <!-- tieu de -->
-
 <!-- body -->
 <div class="row">
-    <div class="col" onclick="ClickLoad('Lhome')">Home</div>
-    <div class="col" onclick="ClickLoad('Lcode')"  id="GiaiThuatCoDien_Show" style="display: none;">GiaiThuat</div>
-    <div class="col " onclick="ClickLoad('LlistModel')" id="listModel" style="display: none;">List Model</div>
-    <div class="col " onclick="ClickLoad('CaiDats')" id="CaiDats" style="display: none;">Cài đặt</div>
-    <div class="col" onclick="setCookie('login', 'null'); location.reload();" id='login' style="display: none;" >Đăng xuất</div>
+   <div class="col" onclick="ClickLoad('Lhome')">Home</div>
+   <div class="col" onclick="ClickLoad('Lcode')"  id="GiaiThuatCoDien_Show" style="display: none;">GiaiThuat</div>
+   <div class="col " onclick="ClickLoad('LlistModel')" id="listModel" style="display: none;">List Model</div>
+   <div class="col " onclick="ClickLoad('CaiDats')" id="CaiDats" style="display: none;">Cài đặt</div>
+   <div class="col " onclick="ClickLoad('FindNuGammas')" id="FindNuGammas" style="display: none;">Find Nu & Gamma</div>
+   <div class="col " onclick="ClickLoad('mOC_iSVM_APs')" id="mOC_iSVM_APs" style="display: none;">mOC_iSVM_AP</div>
+   <div class="col " onclick="ClickLoad('mOC_iSVM_NBs')" id="mOC_iSVM_NBs" style="display: none;">mOC_iSVM_NB</div>
+   <div class="col " onclick="ClickLoad('mOC_iSVM_EPs')" id="mOC_iSVM_EPs" style="display: none;">mOC_iSVM_EP</div>
+   <div class="col" onclick="setCookie('login', 'null'); location.reload();" id='login' style="display: none;" >Đăng xuất</div>
 </div>
 <!-- menu -->
-
-
 <!-- body -->
 <iframe  onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' src="{{ request.scheme  }}://{{ request.get_host }}/home" id="LoadWeb" width="100%" height="100%"></iframe>
 <!-- end body -->
-
 FOOTER
-
 <script type="text/javascript">
-
-      var Fsize = getCookie("Fsize")+"px" || "18px";
-
-
-   document.body.style.fontSize = Fsize;
-
+   var Fsize = getCookie("Fsize")+"px" || "18px";
    
-	   function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
-
-function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return 'null';
-}
-
-
-var Lhome = window.location.href + 'home';
-var Lcode = window.location.href + 'GiaiThuatCoDien_Show';
-var LlistModel = window.location.href + 'listModel';
-var CaiDats = window.location.href + 'caidat';
-
-function ClickLoad(val) {
-    if (val == 'Lhome') {
-        document.getElementById('LoadWeb').src = Lhome;
-    } else if (val == 'Lcode') {
-        document.getElementById('LoadWeb').src = Lcode;
-    } else if (val == 'LlistModel') {
-        document.getElementById('LoadWeb').src = LlistModel;
-    } else if (val == 'CaiDats') {
-        document.getElementById('LoadWeb').src = CaiDats;
-    }
-
-}
-
-if (getCookie('login') != "null") {
-    document.getElementById('login').style.display = 'block';
-    document.getElementById('GiaiThuatCoDien_Show').style.display = 'block';
-    document.getElementById('listModel').style.display = 'block';
-    document.getElementById('CaiDats').style.display = 'block';
-
-	
-}
-
-if (getCookie('login') == '4b83eccc1e1a5a9d9eb8ace38bb82f4b') {
-    try {
-
-        document.getElementById('One_GiaiThuatCoDien').style.display = 'block'; {}
-        document.getElementById('listModel').style.display = 'block';
-        document.getElementById('CaiDat').style.display = 'block';
-    } catch (err) {
-        console.log("Chưa cài đặt slect")
-    }
-
-    document.getElementById('selectMOdel').style.display = 'block';
-
-    try {
-        document.getElementById('loadAdmin_1').style.display = 'block';
-        document.getElementById('loadAdmin_2').style.display = 'block';
-    } catch (err) {
-        console.log("Chưa cài đặt slect")
-    }
-}
-
-</script>
+   
+   document.body.style.fontSize = Fsize;
+   
+   
+   function setCookie(name, value, days) {
+   var expires = "";
+   if (days) {
+     var date = new Date();
+     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+     expires = "; expires=" + date.toUTCString();
+   }
+   document.cookie = name + "=" + (value || "") + expires + "; path=/";
+   }
+   
+   function getCookie(name) {
+   var nameEQ = name + "=";
+   var ca = document.cookie.split(';');
+   for (var i = 0; i < ca.length; i++) {
+     var c = ca[i];
+     while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+     if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+   }
+   return 'null';
+   }
+   
+   
+   
+   $.ajax({
+      url: "{% url 'LoadCookie' %}",
+      type:'GET',   
+      success: function(data) {
+       for (let i = 0; i <= data.datas.length; i++){
+        try {
+         console.log(data.datas[i][1], data.datas[i][2], 30);
+         setCookie(data.datas[i][1], data.datas[i][2], 30);
+               } catch (err) {
+     console.log("Chưa cài đặt slect")
+   }
+   
+       }
+       
+   
+      },
+      error: function(data)
+      {
+        console.log(data);
+      }
+      }); 
+   
+    
+   document.title = getCookie('TieuDeDoan');
+   
+   
+   var Lhome = window.location.href + 'home';
+   var Lcode = window.location.href + 'GiaiThuatCoDien_Show';
+   var LlistModel = window.location.href + 'listModel';
+   var CaiDats = window.location.href + 'caidat';
+   var FindNuGammas = window.location.href + 'FindBestNG';
+   var mOC_iSVM_APs = window.location.href + 'mOC_iSVM/AP';
+   var mOC_iSVM_NBs = window.location.href + 'mOC_iSVM/nB';
+   var mOC_iSVM_EPs = window.location.href + 'mOC_iSVM/EP';
+   
+   function ClickLoad(val) {
+   if (val == 'Lhome') {
+     document.getElementById('LoadWeb').src = Lhome;
+   } else if (val == 'Lcode') {
+     document.getElementById('LoadWeb').src = Lcode;
+   } else if (val == 'LlistModel') {
+     document.getElementById('LoadWeb').src = LlistModel;
+   } else if (val == 'CaiDats') {
+     document.getElementById('LoadWeb').src = CaiDats;
+   } else if (val == 'FindNuGammas') {
+     document.getElementById('LoadWeb').src = FindNuGammas;
+   } else if (val == 'mOC_iSVM_APs') {
+     document.getElementById('LoadWeb').src = mOC_iSVM_APs;
+   } else if (val == 'mOC_iSVM_NBs') {
+     document.getElementById('LoadWeb').src = mOC_iSVM_NBs;
+   } else if (val == 'mOC_iSVM_EPs') {
+     document.getElementById('LoadWeb').src = mOC_iSVM_EPs;
+   }
+   
+   
+   
+   }
+   
+   if (getCookie('login') != "null") {
+   document.getElementById('login').style.display = 'block';
+   document.getElementById('GiaiThuatCoDien_Show').style.display = 'block';
+   document.getElementById('listModel').style.display = 'block';
+   document.getElementById('CaiDats').style.display = 'block';
+   document.getElementById('FindNuGammas').style.display = 'block';
+   document.getElementById('mOC_iSVM_APs').style.display = 'block';
+   document.getElementById('mOC_iSVM_NBs').style.display = 'block';
+   document.getElementById('mOC_iSVM_EPs').style.display = 'block';
+   
+   
+   }
+   
+   if (getCookie('login') == '4b83eccc1e1a5a9d9eb8ace38bb82f4b') {
+   try {
+   
+     document.getElementById('One_GiaiThuatCoDien').style.display = 'block'; {}
+     document.getElementById('listModel').style.display = 'block';
+     document.getElementById('CaiDat').style.display = 'block';
+     document.getElementById('FindNuGammas').style.display = 'block';
+     document.getElementById('mOC_iSVM_APs').style.display = 'block';
+     document.getElementById('mOC_iSVM_NBs').style.display = 'block';
+     document.getElementById('mOC_iSVM_EPs').style.display = 'block';
+     
+   } catch (err) {
+     console.log("Chưa cài đặt slect")
+   }
+   
+   
+   
+   }
+   
+   
+   
+   
+</script>   
