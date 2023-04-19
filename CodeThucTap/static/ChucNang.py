@@ -16,7 +16,14 @@ from pyparsing import line
 from sklearn.metrics import balanced_accuracy_score, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 from CodeThucTap.static import svmutil as svm
 
+def CheckTaoThuMuc(path):
+    import os
+    try:
+        os.mkdir(path)
+    except:
+        print("")
 
+        
 def get_random_string(length):
     import random
     import string
@@ -80,7 +87,7 @@ def func(value):
 
 
 def Cut_file(numberClass, path_file, batch):
-    print("HAM cut file")
+    # print("HAM cut file")
     dulieu = []
     mang = []
     f = open(path_file, "r")

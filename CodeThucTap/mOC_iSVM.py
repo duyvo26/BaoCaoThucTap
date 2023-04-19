@@ -13,7 +13,7 @@ from datetime import datetime
 import urllib
 import shutil
 from matplotlib import pyplot as plt
-from CodeThucTap.static.ChucNang import Cut_file, find_best_nugamma
+from CodeThucTap.static.ChucNang import Cut_file, find_best_nugamma, CheckTaoThuMuc
 from CodeThucTap.static.mOC_iSVM_AP import mOC_iSVM_AP
 from CodeThucTap.static.mOC_iSVM_nB import mOC_iSVM_nB
 from CodeThucTap.static.mOC_iSVM_EP import mOC_iSVM_EP
@@ -156,6 +156,7 @@ def get_random_string(length):
 def SaveFileCut(request, ma, loai, data):
     path = settings.MEDIA_ROOT + '/media/' + \
         request.COOKIES.get('id')+'/CutFile/'
+    CheckTaoThuMuc(path)
     namefile = ''
     if loai == 'partone':
         namefile = f"{ma}.train"
@@ -186,7 +187,7 @@ def cut_file(request, uploaded_file_url, filename, numberCut):
         numberClass += 1
 
     partone, parttwo, arr = Cut_file(
-        numberClass, settings.MEDIA_ROOT+'/media/'+request.COOKIES.get('id')+'/'+os.sep+filename, int(numberCut))
+        numberClass, settings.MEDIA_ROOT+'/media/'+request.COOKIES.get('id')+'/'+filename, int(numberCut))
     print("save file train")
     SaveFileCut(request, dt_string, 'partone', partone)
     print("save file test")
@@ -195,7 +196,7 @@ def cut_file(request, uploaded_file_url, filename, numberCut):
     SaveFileCut(request, dt_string, 'arr', arr)
     path = settings.MEDIA_ROOT + '/media/' + \
         request.COOKIES.get('id')+'/CutFile/'
-
+    CheckTaoThuMuc(path)
     return path+dt_string+'.train', path+dt_string+'.test', path+dt_string+'.data'
     # return render(request, 'svm_imoc.html', {'array': arr, 'part_two': parttwo, 'part_one': partone, "ma": dt_string})
 
@@ -226,6 +227,7 @@ def FindNuGamma_POST(request):
             nustart = float(request.POST['input-nu-start']) + \
                 float(request.POST['input-nu-step'])
         path = filename_data
+        CheckTaoThuMuc(path)
         pathnuGa = settings.MEDIA_ROOT+'/media/' + \
             request.COOKIES.get('id')+'/find_best_nugamma'
         nuEnd = float(request.POST['input-nu-end'])
@@ -268,7 +270,8 @@ def One_mOC_iSVM_AP_POST(request):
         # chay 1 lan
         if str(request.POST['inputFor']) == '1':
             path = settings.MEDIA_ROOT+'/media/' + \
-                request.COOKIES.get('id')+'/iSVM_AP/'+os.sep
+                request.COOKIES.get('id')+'/iSVM_AP/'
+            CheckTaoThuMuc(path)
             arr0, arr1, arr2, arr3 = mOC_iSVM_AP(request.COOKIES.get('id'),
                                                  filename_train, filename_test, path, bestnu, bestgamma, age, batch)
             arr_URL, array_SUM = drawBieuDo(
@@ -283,9 +286,10 @@ def One_mOC_iSVM_AP_POST(request):
                     f"###########        Da chay {i}               ###########")
                 print("#########################################################")
                 path = settings.MEDIA_ROOT+'/media/' + \
-                    request.COOKIES.get('id')+'/iSVM_AP/'+os.sep
-                arr0, arr1, arr2, arr3 = mOC_iSVM_AP(
-                    filename_train, filename_test, path, bestnu, bestgamma, age, batch)
+                    request.COOKIES.get('id')+'/iSVM_AP/'
+                CheckTaoThuMuc(path)
+                arr0, arr1, arr2, arr3 = mOC_iSVM_AP(request.COOKIES.get('id'),
+                                                     filename_train, filename_test, path, bestnu, bestgamma, age, batch)
 
                 arr0.insert(0, 'Accuracy Score lần chạy '+str(i))
                 arr1.insert(0, 'Precision lần chạy '+str(i))
@@ -325,7 +329,8 @@ def One_mOC_iSVM_nB_POST(request):
         # chay 1 lan
         if str(request.POST['inputFor']) == '1':
             path = settings.MEDIA_ROOT+'/media/' + \
-                request.COOKIES.get('id')+'/iSVM_nB/'+os.sep
+                request.COOKIES.get('id')+'/iSVM_nB/'
+            CheckTaoThuMuc(path)
             arr0, arr1, arr2, arr3 = mOC_iSVM_nB(request.COOKIES.get('id'),
                                                  filename_train, filename_test, path, bestnu, bestgamma, age, batch)
             arr_URL, array_SUM = drawBieuDo(
@@ -340,7 +345,8 @@ def One_mOC_iSVM_nB_POST(request):
                     f"###########        Da chay {i}               ###########")
                 print("#########################################################")
                 path = settings.MEDIA_ROOT+'/media/' + \
-                    request.COOKIES.get('id')+'/iSVM_nB/'+os.sep
+                    request.COOKIES.get('id')+'/iSVM_nB/'
+                CheckTaoThuMuc(path)
                 arr0, arr1, arr2, arr3 = mOC_iSVM_nB(request.COOKIES.get('id'),
                                                      filename_train, filename_test, path, bestnu, bestgamma, age, batch)
 
@@ -382,7 +388,8 @@ def One_mOC_iSVM_EP_POST(request):
         # chay 1 lan
         if str(request.POST['inputFor']) == '1':
             path = settings.MEDIA_ROOT+'/media/' + \
-                request.COOKIES.get('id')+'/iSVM_EP/'+os.sep
+                request.COOKIES.get('id')+'/iSVM_EP/'
+            CheckTaoThuMuc(path)
             arr0, arr1, arr2, arr3 = mOC_iSVM_EP(request.COOKIES.get('id'),
                                                  filename_train, filename_test, path, bestnu, bestgamma, age, batch)
             arr_URL, array_SUM = drawBieuDo(
@@ -397,7 +404,9 @@ def One_mOC_iSVM_EP_POST(request):
                     f"###########        Da chay {i}               ###########")
                 print("#########################################################")
                 path = settings.MEDIA_ROOT+'/media/' + \
-                    request.COOKIES.get('id')+'/iSVM_EP/'+os.sep
+                    request.COOKIES.get('id')+'/iSVM_EP/'
+                    
+                CheckTaoThuMuc(path)
                 arr0, arr1, arr2, arr3 = mOC_iSVM_EP(request.COOKIES.get('id'),
                                                      filename_train, filename_test, path, bestnu, bestgamma, age, batch)
 

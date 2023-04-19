@@ -148,11 +148,11 @@ def mOC_iSVM_AP(idUser, file_train, file_test, path_stock, best_nu=0.050512, bes
                 for az in arrLable:
                     ChucNang.connect_2_file(
                         arrFileModel[j][az], arrFileTrain[i][az], arrFileTrain[i][az])
-                    if az <= 1:
-                        print(arrFileModel[j][az])
-                    if az == 1:
-                        print("...")
-                print("-----")
+                    # if az <= 1:
+                    #     print(arrFileModel[j][az])
+                    # if az == 1:
+                    #     print("...")
+                # print("-----")
             # lap n lan  label
             aRRLUU = []
             for az in arrLable:
@@ -178,11 +178,11 @@ def mOC_iSVM_AP(idUser, file_train, file_test, path_stock, best_nu=0.050512, bes
                 for az in arrLable:
                     ChucNang.connect_2_file(
                         arrFileModel[j][az], arrFileTrain[i][az], arrFileTrain[i][az])
-                    if az <= 1:
-                        print(arrFileModel[j][az])
-                    if az == 1:
-                        print("...")
-                print("----")
+                #     if az <= 1:
+                #         print(arrFileModel[j][az])
+                #     if az == 1:
+                #         print("...")
+                # print("----")
             # lap n lan  label
             aRRLUU = []
             for az in arrLable:
