@@ -21,8 +21,8 @@
 
          <h5 >File mô hình dự đoán iSVM</h5>
          <div class="custom-file mb-3">
-            <input  type="file" class="custom-file-input" id="input-file" accept=".zip" name="fileModelSVM">
-            <label class="custom-file-label" for="input-file" id="lable-input-file-cut">File .zip Model</label>
+            <input type="file" class="custom-file-input"  id="input-files" accept=".zip" name="fileModelSVM">
+            <label class="custom-file-label" for="input-file" >File .zip Model</label>
          </div>
  
          <input  class="btn btn-lg btn-block btn-danger" type="submit" value='Tải lên'>
@@ -46,7 +46,11 @@
          $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
          
          });
+                  $("#input-files").on("change", function () {
+         var fileName = $(this).val().split("\\").pop();
+         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
          
+         });
          
          if(getCookie('fileModel') != 'null'){
             document.getElementById("nameFile").innerHTML = getCookie('fileModel');

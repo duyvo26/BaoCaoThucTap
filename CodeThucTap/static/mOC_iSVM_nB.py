@@ -179,7 +179,7 @@ def mOC_iSVM_nB(idUser, file_train, file_test, path_stock, best_nu=0.050512, bes
                 # save model
                 if (i == (batch-1)):
                     svm.svm_save_model(
-                        path_stock+f"/tmp/SaveModels/train_OUT__{az}.model", m)
+                        path_stock+f"/tmp/SaveModels/{az}.model", m)
             else:
                 # find file train isset
                 # print("----------------------------------------------")
@@ -199,7 +199,7 @@ def mOC_iSVM_nB(idUser, file_train, file_test, path_stock, best_nu=0.050512, bes
                     # save model
                     if (i == (batch-1)):
                         svm.svm_save_model(
-                            path_stock+f"/tmp/SaveModels/train_OUT__{az}.model", m)
+                            path_stock+f"/tmp/SaveModels/{az}.model", m)
 
 
     # zip model

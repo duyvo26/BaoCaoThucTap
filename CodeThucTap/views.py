@@ -585,8 +585,7 @@ def ChuanDoan(request):
                     return render(request, 'home/home.html', {'ketqua': "Có lỗi vui lòng thử lại !!!"})
 
                 print("ChuanDoanISVM-----------------------------------------------", ketqua)
-                getClassName = request.POST['ListNameClass'].split(',')[
-                    int(ketqua)]
+                getClassName = request.POST['ListNameClass'].split(',')[int(ketqua)]
                 out = f"Kết quả: {getClassName}"
                 return render(request, 'home/home.html', {'ketqua': out})
     except:
