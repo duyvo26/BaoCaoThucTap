@@ -203,7 +203,7 @@ def mOC_iSVM_EP(idUser, file_train, file_test, path_stock, best_nu=0.050512, bes
 
     # zip model
     try:
-        os.makedirs(path_stock+f"/DowModels")
+        os.makedirs(path_stock + f"/DowModels")
     except:
         print("")
 

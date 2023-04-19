@@ -204,7 +204,7 @@ def mOC_iSVM_nB(idUser, file_train, file_test, path_stock, best_nu=0.050512, bes
 
     # zip model
     try:
-        os.makedirs(path_stock+f"/DowModels")
+        os.makedirs(path_stock + f"/DowModels")
     except:
         print("")
 
@@ -214,6 +214,10 @@ def mOC_iSVM_nB(idUser, file_train, file_test, path_stock, best_nu=0.050512, bes
     filename = ChucNang.get_random_string(8)
     path = path_stock + f"/DowModels/{filename}"
     shutil.make_archive(path, 'zip', path_stock+f"tmp/SaveModels")
+    
+    print(idUser, 'nB', filename + '.zip', path, str(dt_string))
+    
+    
     ChucNang.AddModelSql(idUser, 'nB', filename + '.zip', path, str(dt_string))
 
     # test

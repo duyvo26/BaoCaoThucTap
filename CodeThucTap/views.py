@@ -168,12 +168,13 @@ def SaveFileDraw(request, name_, arr_out_ACC, arr_out_Precision, arr_out_Recall,
 
 
 def download(request, file_path):
+    
     with open(file_path, 'rb') as fh:
-        response = HttpResponse(
-            fh.read(), content_type="application/vnd.ms-excel")
+        response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
         response['Content-Disposition'] = 'inline; filename=' + \
             os.path.basename(file_path)
         return response
+
 
 
 def exportcsv(request, ma, loai):
@@ -208,12 +209,16 @@ def listModel(request):
 
 
 def DowMOdel(request):
-    fileName = settings.MEDIA_ROOT + 'media/' + \
-        request.COOKIES.get('id') + "/DowModels/" + \
-        request.POST['NameFile']
+    for i in ['', 'iSVM_AP', 'iSVM_EP', 'iSVM_nB']:
+        try:
+            fileName = settings.MEDIA_ROOT + 'media/' + \
+                request.COOKIES.get('id') + '/' +str(i) + "/DowModels/" + \
+                request.POST['NameFile']
+            print(fileName)
+            return download(request, fileName)
 
-    print(fileName)
-    return download(request, fileName)
+        except:
+            continue
 
 
 
@@ -302,9 +307,6 @@ def setting_POST(request):
             UpdateDataCauHinh(0, fileAnh)
         except:
             fileAnh = ''
-
-
-
 
         from django.http import JsonResponse
         data = {
@@ -427,7 +429,7 @@ def GiaiThuatCoDien_POST(request):
         return redirect('test')
 
 
-def ChuanDoanUploadFIle(request, FileCSV, FileModel, ListClassOut):
+def ChuanDoanUploadFIle(request, FileCSV, FileModel, ListClassOut, Loai):
     ArrOUT = []
     ArrOUTKQ = ['Out Lable']
     with open(FileCSV, 'r', encoding="utf-8") as csvfile:
@@ -445,16 +447,26 @@ def ChuanDoanUploadFIle(request, FileCSV, FileModel, ListClassOut):
 
     for index, line in enumerate(data):
         arrCheck = []
+        textIn = ''
+        Sum = 0
         for ind, lie in enumerate(line):
             if ind == PointClass:
                 continue
-            arrCheck.append(lie)
+            if Loai == 0:
+                arrCheck.append(lie)
+            else:
+                textIn += f"{Sum}:{lie} "
+                Sum += 1
         try:
-            outClass, outPhanTram = ChuanDoanCoDien(FileModel, arrCheck)
+            if Loai == 0:            
+                outClass, outPhanTram = ChuanDoanCoDien(FileModel, arrCheck)
+            else:
+                outClass = ChuanDoanISVM(settings.MEDIA_ROOT, FileModel, textIn)
         except Exception as es:
             print(es)
             return render(request, 'home/home.html', {'ketqua': "Có lỗi vui lòng thử lại !!!"})
-
+          
+            
         ArrOUT.append(line)
         ArrOUTKQ.append([str(ListClassOut[outClass[0]]), outClass[0]])
 
@@ -486,7 +498,7 @@ def ChuanDoan(request):
             # upload file len
             # input-file
             
-            FileModel = settings.MEDIA_ROOT + '/model/FileLoadModel/'+request.POST['FileMOdel']
+            FileModel = settings.MEDIA_ROOT + 'model/FileLoadModel/'+request.POST['FileMOdel']
             # select mo hinh du doan
             select = request.POST['select']
             print('------------',select)
@@ -501,7 +513,7 @@ def ChuanDoan(request):
                     FileCSV = settings.MEDIA_ROOT+'/media/' + \
                         request.COOKIES.get('id')+'/tmp/UpModel/' + myfile.name
 
-                    return ChuanDoanUploadFIle(request, FileCSV, FileModel, request.POST['ListNameClass'].split(','))
+                    return ChuanDoanUploadFIle(request, FileCSV, FileModel, request.POST['ListNameClass'].split(','), 0)
                 if request.POST['selectChuanDoan'] == 'Chuoi':
                     # chuoi text
                     for i in request.POST['inputSum'].split(','):
@@ -539,13 +551,34 @@ def ChuanDoan(request):
                     
                 with zipfile.ZipFile(FileModel, 'r') as zip_ref:
                     zip_ref.extractall(folEX)
-
+                    
                 textIn = ""
-                for i in range(0, int(request.POST['S_input'])):
-                    thamSO = str(request.POST[f'input{i}']).replace(" ", '')
-                    textIn += f"{i}:{thamSO} "
-                print(textIn)
+                
+                if request.POST['selectChuanDoan'] == 'UpCSV':
+                    myfile = request.FILES['input-fileCSV']
+                    fs = FileSystemStorage(
+                        settings.MEDIA_ROOT+'/media/' + request.COOKIES.get('id')+'/tmp/UpModel/')
+                    filename = fs.save(myfile.name, myfile)
+                    FileCSV = settings.MEDIA_ROOT+'/media/' + \
+                        request.COOKIES.get('id')+'/tmp/UpModel/' + myfile.name
 
+                    return ChuanDoanUploadFIle(request, FileCSV, FileModel, request.POST['ListNameClass'].split(','), 1)
+                
+                
+                if request.POST['selectChuanDoan'] == 'Chuoi':
+                    # chuoi text
+                    Sum = 0
+                    for i in request.POST['inputSum'].split(','):
+                        textIn += f"{Sum}:{i} "
+                        Sum += 1
+                        
+                if request.POST['selectChuanDoan'] == 'Input':
+                    # nhap tung o
+                    for i in range(0, int(request.POST['S_input'])):
+                        thamSO = str(request.POST[f'input{i}']).replace(" ", '')
+                        textIn += f"{i}:{thamSO} "
+                        
+                        
                 try:
                     ketqua = ChuanDoanISVM(settings.MEDIA_ROOT, folEX, textIn)
                 except:
