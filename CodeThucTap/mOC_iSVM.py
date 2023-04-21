@@ -22,6 +22,9 @@ from CodeThucTap.static.mOC_iSVM_EP import mOC_iSVM_EP
 
 
 def SaveFileDraw(request, name_, arr_out_ACC, arr_out_Precision, arr_out_Recall, arr_out_F1, numberCut, inputFor):
+    Check = inputFor
+    if inputFor == -1:
+        inputFor = 1
     import openpyxl
     # Xác định số hàng và cột lớn nhất trong file excel cần tạo
     row = numberCut + 1
@@ -57,34 +60,34 @@ def SaveFileDraw(request, name_, arr_out_ACC, arr_out_Precision, arr_out_Recall,
             else:
                 ws.cell(column=j+1, row=i+1,
                         value=arr_out_ACC[j][i])
+    if Check != -1:
+        # arr_out_ACC, arr_out_Precision, arr_out_Recall, arr_out_F1
+        for i in range(row, row * 2):
+            for j in range(0, column):
 
-    # arr_out_ACC, arr_out_Precision, arr_out_Recall, arr_out_F1
-    for i in range(row, row * 2):
-        for j in range(0, column):
+                if i == 0:
+                    ws.cell(column=j+1, row=i+1,
+                            value=str(arr_out_Precision[j][i - row]))
+                else:
+                    ws.cell(column=j+1, row=i+1,
+                            value=arr_out_Precision[j][i - row])
 
-            if i == 0:
-                ws.cell(column=j+1, row=i+1,
-                        value=str(arr_out_Precision[j][i - row]))
-            else:
-                ws.cell(column=j+1, row=i+1,
-                        value=arr_out_Precision[j][i - row])
-
-    for i in range(row * 2, row * 3):
-        for j in range(0, column):
-            if i == 0:
-                ws.cell(column=j+1, row=i+1,
-                        value=str(arr_out_Recall[j][i - (row * 2)]))
-            else:
-                ws.cell(column=j+1, row=i+1,
-                        value=arr_out_Recall[j][i - (row * 2)])
-    for i in range(row * 3, row * 4):
-        for j in range(0, column):
-            if i == 0:
-                ws.cell(column=j+1, row=i+1,
-                        value=str(arr_out_F1[j][i - (row * 3)]))
-            else:
-                ws.cell(column=j+1, row=i+1,
-                        value=arr_out_F1[j][i - (row * 3)])
+        for i in range(row * 2, row * 3):
+            for j in range(0, column):
+                if i == 0:
+                    ws.cell(column=j+1, row=i+1,
+                            value=str(arr_out_Recall[j][i - (row * 2)]))
+                else:
+                    ws.cell(column=j+1, row=i+1,
+                            value=arr_out_Recall[j][i - (row * 2)])
+        for i in range(row * 3, row * 4):
+            for j in range(0, column):
+                if i == 0:
+                    ws.cell(column=j+1, row=i+1,
+                            value=str(arr_out_F1[j][i - (row * 3)]))
+                else:
+                    ws.cell(column=j+1, row=i+1,
+                            value=arr_out_F1[j][i - (row * 3)])
 
     path_stock = settings.MEDIA_ROOT + \
         '/media/'+request.COOKIES.get('id')+'/'
@@ -278,9 +281,12 @@ def One_mOC_iSVM_AP_POST(request):
                 arr0, arr1, arr2, arr3, batch, 'AP')
             return render(request, 'home/showData.html', {'img': arr_URL, "array_SUM": array_SUM, "drawchart": "is active"})
         else:
+            Run = 2
+            if str(request.POST['inputFor']) != '-1':
+                Run = int(request.POST['inputFor'])+1
             # chay n lan
             arr_out_ACC, arr_out_Precision, arr_out_Recall, arr_out_F1 = [], [], [], []
-            for i in np.arange(1, int(request.POST['inputFor'])+1, 1):
+            for i in np.arange(1, Run, 1):
                 print("#########################################################")
                 print(
                     f"###########        Da chay {i}               ###########")
@@ -337,9 +343,12 @@ def One_mOC_iSVM_nB_POST(request):
                 arr0, arr1, arr2, arr3, batch, 'nB')
             return render(request, 'home/showData.html', {'img': arr_URL, "array_SUM": array_SUM, "drawchart": "is active"})
         else:
+            Run = 2
+            if str(request.POST['inputFor']) != '-1':
+                Run = int(request.POST['inputFor'])+1
             # chay n lan
             arr_out_ACC, arr_out_Precision, arr_out_Recall, arr_out_F1 = [], [], [], []
-            for i in np.arange(1, int(request.POST['inputFor'])+1, 1):
+            for i in np.arange(1, Run, 1):
                 print("#########################################################")
                 print(
                     f"###########        Da chay {i}               ###########")
@@ -396,9 +405,12 @@ def One_mOC_iSVM_EP_POST(request):
                 arr0, arr1, arr2, arr3, batch, 'EP')
             return render(request, 'home/showData.html', {'img': arr_URL, "array_SUM": array_SUM, "drawchart": "is active"})
         else:
+            Run = 2
+            if str(request.POST['inputFor']) != '-1':
+                Run = int(request.POST['inputFor'])+1
             # chay n lan
             arr_out_ACC, arr_out_Precision, arr_out_Recall, arr_out_F1 = [], [], [], []
-            for i in np.arange(1, int(request.POST['inputFor'])+1, 1):
+            for i in np.arange(1, Run, 1):
                 print("#########################################################")
                 print(
                     f"###########        Da chay {i}               ###########")
