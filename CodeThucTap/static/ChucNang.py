@@ -496,7 +496,10 @@ def ChuanDoanCoDien(path_models, txtIN):
     import pickle
     loaded_model = pickle.load(open(path_models, 'rb'))
     outClass = loaded_model.predict([txtIN])
-    outPhanTram = loaded_model.score([txtIN], outClass)
+    # outPhanTram = loaded_model.score([txtIN], outClass)
+    import numpy as np
+    outPhanTram = loaded_model.predict_proba([txtIN])
+    outPhanTram = np.max(outPhanTram)
     return outClass, outPhanTram
 
 

@@ -15,6 +15,7 @@ from pandas import cut
 from pyparsing import line
 from sklearn.metrics import balanced_accuracy_score, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 from CodeThucTap.static import svmutil as svm
+# from libsvm import svmutil as svm
 
 import ChucNang
 

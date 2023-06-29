@@ -1,1 +1,2 @@
-pipreqs --encoding=utf8 D:\GIT\Python\BaoCaoThucTap
+pip install pipreqs
+pipreqs --force --encoding=utf8 .
